@@ -28,7 +28,8 @@ release:
 	git tag -l | grep -v debian/
 endif
 
-.PHONY: deb-snapshot
+.PHONY: deb-snapshot debian-snapshot
+debian-snapshot: deb-snapshot
 deb-snapshot:
 	rm -rf build/snapshot
 	mkdir -p build/snapshot/debian
