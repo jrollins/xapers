@@ -1,4 +1,7 @@
+* BUG: can not add --file when source contains '/'
+   * "xapers add --source=arXiv:hep-th/9806203 --file"
 * DB VERSION
+* separate add and update commands
 * add only opens writable db on doc.sync()
 * set/get title, author, tags as data or values (is this faster?)
 * pdf thumbnails:
@@ -25,6 +28,7 @@ cli:
 * export should produce full mirror of xapers document structure
 
 nci:
+* meta <other> for other fields (title, authors, year, etc)
 * custom keybindings
 * customize helper commands
 * how to test??
