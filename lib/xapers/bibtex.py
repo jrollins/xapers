@@ -21,6 +21,7 @@ Jameson Rollins <jrollins@finestructure.net>
 import os
 import sys
 import io
+import re
 import json
 import pybtex
 from pybtex.bibtex.utils import split_name_list
@@ -129,7 +130,7 @@ class Bibentry():
 
         """
         try:
-            parsed = self.entry.fields['file'].split(':')
+            parsed = re.split(r'(?<!\\):', self.entry.fields['file'])
             if len(parsed) > 1:
                 return parsed[1]
             else:
