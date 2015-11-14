@@ -52,7 +52,7 @@ class DocItem(urwid.WidgetWrap):
               'year',
               'source',
               #'tags',
-              'file',
+              #'file',
               #'summary',
               ]
 
@@ -97,10 +97,6 @@ class DocItem(urwid.WidgetWrap):
             summary = 'NO FILE'
         field_data['summary'] = summary
 
-        files = self.doc.get_files()
-        if files:
-            field_data['file'] = os.path.basename(files[0])
-
         def gen_field_row(field, value):
             if field in ['journal', 'year', 'source']:
                 color = 'journal'
@@ -120,9 +116,10 @@ class DocItem(urwid.WidgetWrap):
             urwid.Text('%s%% match (%s/%s)' % (doc.matchp, doc_ind, total_docs), align='right'),
             ]),
             'head')
-        pile = [urwid.AttrMap(urwid.Divider(' '), '', ''),
-                header
-                ] + [gen_field_row(field, field_data[field]) for field in self.FIELDS]
+        pile = [urwid.AttrMap(urwid.Divider(' '), '', ''), header] + \
+               [gen_field_row(field, field_data[field]) for field in self.FIELDS]
+        for f in self.doc.get_files():
+            pile += [gen_field_row('file', os.path.basename(f))]
         w = urwid.AttrMap(urwid.AttrMap(urwid.Pile(pile), 'field'),
                           '',
                           {'head': 'head focus',
@@ -291,19 +288,18 @@ class Search(urwid.WidgetWrap):
         """open document file"""
         entry = self.listbox.get_focus()[0]
         if not entry: return
-        path = entry.doc.get_fullpaths()
-        if not path:
+        paths = entry.doc.get_fullpaths()
+        if not paths:
             self.ui.set_status('No file for document id:%d.' % entry.docid)
             return
-        path = path[0]
-        if not os.path.exists(path):
-            self.ui.set_status('ERROR: id:%d: file not found.' % entry.docid)
-            return
-        self.ui.set_status('opening file: %s...' % path)
-        subprocess.Popen(['xdg-open', path],
-                         stdin=self.ui.devnull,
-                         stdout=self.ui.devnull,
-                         stderr=self.ui.devnull)
+        for path in paths:
+            if not os.path.exists(path):
+                self.ui.set_status('ERROR: id:%d: file not found.' % entry.docid)
+            self.ui.set_status('opening file: %s...' % path)
+            subprocess.Popen(['xdg-open', path],
+                             stdin=self.ui.devnull,
+                             stdout=self.ui.devnull,
+                             stderr=self.ui.devnull)
 
     def viewURL(self):
         """open document URL in browser"""
