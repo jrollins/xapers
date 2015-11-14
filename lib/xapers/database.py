@@ -361,14 +361,14 @@ class Database():
                     if log:
                         print >>sys.stderr, '  adding bibtex'
                     doc.add_bibtex(dpath)
-                elif os.path.splitext(dpath)[1] == '.pdf':
-                    if log:
-                        print >>sys.stderr, '  adding file:', dfile
-                    doc.add_file(dpath)
                 elif dfile == 'tags':
                     if log:
                         print >>sys.stderr, '  adding tags'
                     with open(dpath, 'r') as f:
                         tags = f.read().strip().split('\n')
                     doc.add_tags(tags)
+                else: #elif os.path.splitext(dpath)[1] == '.pdf':
+                    if log:
+                        print >>sys.stderr, '  adding file:', dfile
+                    doc.add_file(dpath)
             doc.sync()
