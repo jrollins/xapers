@@ -14,7 +14,7 @@ for more details.
 You should have received a copy of the GNU General Public License
 along with notmuch.  If not, see <http://www.gnu.org/licenses/>.
 
-Copyright 2012-2014
+Copyright 2012-2016
 Jameson Rollins <jrollins@finestructure.net>
 """
 
