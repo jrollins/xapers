@@ -102,6 +102,8 @@ class Document():
         """Return document id of document."""
         return self.docid
 
+    ########################################
+
     def _make_docdir(self):
         if os.path.exists(self.docdir):
             if not os.path.isdir(self.docdir):
@@ -236,9 +238,11 @@ class Document():
     def add_file_data(self, name, data):
         """Add a file data to document.
 
-        'name' is the name of the file, 'data is the file data.
+        'name' is the name of the file, 'data' is the file data,
+        e.g. a string of text extracted from the document.
 
-        File will not copied in to docdir until sync().
+        File will not copied into docdir until sync().
+
         """
         # FIXME: set mime type term
 

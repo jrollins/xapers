@@ -46,10 +46,10 @@ class BibtexError(Exception):
 ##################################################
 
 class Bibtex():
-    """Represents a bibtex database."""
+    """Represents a bibtex database.
 
+    """
     # http://www.bibtex.org/Format/
-
     def __init__(self, bibtex):
 
         parser = inparser.Parser(encoding='utf-8')
@@ -89,8 +89,9 @@ class Bibtex():
 ##################################################
 
 class Bibentry():
-    """Represents an individual entry in a bibtex database"""
+    """Represents an individual entry in a bibtex database.
 
+    """
     def __init__(self, key, entry):
         self.key = key
         self.entry = entry
@@ -119,7 +120,10 @@ class Bibentry():
 
     def get_file(self):
         """Returns file path if file field exists.
-Expects either single path string or Mendeley/Jabref format."""
+
+        Expects either single path string or Mendeley/Jabref format.
+
+        """
         try:
             parsed = self.entry.fields['file'].split(':')
             if len(parsed) > 1:
