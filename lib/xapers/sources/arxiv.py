@@ -10,6 +10,9 @@ url_format = 'http://arxiv.org/abs/%s'
 
 url_regex = 'http://arxiv.org/(?:abs|pdf|format)/([^/]*)'
 
+# http://arxiv.org/help/arxiv_identifier
+scan_regex = 'arXiv:([0-9]{4}\.[0-9]{4,5})(?:v[0-9]+)?'
+
 # html parser override to override handler methods
 class MyHTMLParser(HTMLParser):
     def __init__(self):
