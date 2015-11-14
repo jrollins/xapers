@@ -35,7 +35,7 @@ class UI():
     palette = [
         ('header', 'white', 'dark blue'),
         ('footer', 'white', 'dark blue'),
-        ('prompt', 'black', 'light green'),
+        ('prompt', 'black', 'dark green'),
         ]
 
     keys = collections.OrderedDict([
