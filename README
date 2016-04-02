@@ -74,7 +74,7 @@ Dependencies :
   * python (>= 2.6)
   * python-xapian - Python Xapian search engine bindings
   * poppler-utils - PDF processing tools
-  * pybtex - Python bibtex parser
+  * pybtex (>= 0.19) - Python bibtex parser
   * pycurl - Python bindings to libcurl
 
 Recommends (for curses UI) :

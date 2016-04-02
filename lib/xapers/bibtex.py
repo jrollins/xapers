@@ -23,8 +23,8 @@ import sys
 import io
 import json
 import pybtex
-from pybtex.core import Entry, Person
 from pybtex.bibtex.utils import split_name_list
+from pybtex.database import Entry, Person
 from pybtex.database.input import bibtex as inparser
 from pybtex.database.output import bibtex as outparser
 
