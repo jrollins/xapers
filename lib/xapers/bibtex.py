@@ -55,7 +55,10 @@ class Bibtex():
         parser = inparser.Parser(encoding='utf-8')
 
         if os.path.exists(bibtex):
-            bibdata = parser.parse_file(bibtex)
+            try:
+                bibdata = parser.parse_file(bibtex)
+            except TokenRequired as e:
+                raise BibtexError(e.get_context())
         else:
             # StringIO requires unicode input
             # http://nedbatchelder.com/text/unipain.html
