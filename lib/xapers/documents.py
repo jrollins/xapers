@@ -443,13 +443,15 @@ class Document():
     ########################################
 
     def get_key(self):
+        """Get the document key."""
+        # FIXME: get from facet not bib
         self._load_bib()
         if not self.bibentry:
             return
         return self.bibentry.key
 
     def get_title(self):
-        """Get the title from document bibtex."""
+        """Get document full title from bibtex."""
         self._load_bib()
         if not self.bibentry:
             return
@@ -458,7 +460,8 @@ class Document():
             return fields['title']
 
     def get_year(self):
-        """Get the title from document bibtex."""
+        """Get document year from bibtex."""
+        # FIXME: get from facet not bib
         self._load_bib()
         if not self.bibentry:
             return

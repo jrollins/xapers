@@ -1,3 +1,16 @@
+* put key in nci
+* tag auto-complete in nci
+* nci buffers don't work (no screen redraw on buffer close)
+* nci bibtex view doesn't scroll to handle large files
+* rename files when being added?
+* history in nci (search, tags, etc)
+* better resolve conflicts
+* "notes" for documents (editable txt file)
+* need *something* for docs without sources
+   * store at least URL
+
+* unique bibtex keys (handle conflicting)
+   
 * BUG: can not add --file when source contains '/'
    * "xapers add --source=arXiv:hep-th/9806203 --file"
 * DB VERSION
@@ -58,3 +71,7 @@ BUGS
 * capitalized prefixed terms are not searchable
   - dcc:T00000
   - key:HaEA2009a
+  If the term is capitalized, a colon gets automatically added:
+      key:foo -> XBIB|foo
+      key:Foo -> XBIB|:Foo
+

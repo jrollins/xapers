@@ -90,6 +90,7 @@ class Database():
     # FIXME: need database version
 
     def _find_prefix(self, name):
+        # FIXME: make this a dictionary union
         if name in self.BOOLEAN_PREFIX_INTERNAL:
             return self.BOOLEAN_PREFIX_INTERNAL[name]
         if name in self.BOOLEAN_PREFIX_EXTERNAL:
