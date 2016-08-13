@@ -202,6 +202,7 @@ class Search(urwid.WidgetWrap):
         ('-', "removeTags"),
         ('a', "archive"),
         ('meta i', "copyID"),
+        ('meta k', "copyKey"),
         ('meta f', "copyPath"),
         ('meta u', "copyURL"),
         ('meta b', "copyBibtex"),
@@ -330,6 +331,14 @@ class Search(urwid.WidgetWrap):
         docid = "id:%d" % entry.docid
         xclip(docid)
         self.ui.set_status('yanked docid: %s' % docid)
+
+    def copyKey(self):
+        """copy document bibtex key to clipboard"""
+        entry = self.listbox.get_focus()[0]
+        if not entry: return
+        bibkey = entry.doc.get_key()
+        xclip(bibkey)
+        self.ui.set_status('yanked bibkey: %s' % bibkey)
 
     def copyPath(self):
         """copy document file path to clipboard"""
