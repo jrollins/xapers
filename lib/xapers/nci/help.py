@@ -39,4 +39,5 @@ class Help(urwid.WidgetWrap):
                               ])
 
     def keypress(self, size, key):
-        self.ui.keypress(key)
+        if key != '?':
+            return key
