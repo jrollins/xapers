@@ -2,41 +2,44 @@ import urwid
 
 ############################################################
 
-class Help(urwid.WidgetWrap):
+class Help(urwid.Frame):
 
     def __init__(self, ui, target=None):
         self.ui = ui
-        self.target = target
 
-        if self.target:
-            tname = self.target.__class__.__name__
-            self.ui.set_header([urwid.Text("help: " + tname)])
+        if target:
+            tname = target.__class__.__name__
+            htxt = [urwid.Text("Help: " + tname)]
         else:
-            self.ui.set_header([urwid.Text("help")])
+            htxt = [urwid.Text("Help")]
+        header = urwid.AttrMap(urwid.Columns(htxt), 'header')
 
         pile = []
 
-        if self.target and hasattr(self.target, 'keys'):
+        # write command help row
+        def crow(c, cmd, key):
+            f = getattr(c, cmd)
+            hstring = str(getattr(f, '__doc__'))
+            return urwid.Columns([('fixed', 10, urwid.Text(key)),
+                                  urwid.Text(hstring),
+                                  ])
+
+        if target and hasattr(target, 'keys'):
             pile.append(urwid.Text('%s commands:' % (tname)))
             pile.append(urwid.Text(''))
-            for key, cmd in self.target.keys.iteritems():
-                pile.append(self.row('target', cmd, key))
+            for key, cmd in target.keys.iteritems():
+                pile.append(crow(target, cmd, key))
             pile.append(urwid.Text(''))
             pile.append(urwid.Text(''))
 
         pile.append(urwid.Text('Global commands:'))
         pile.append(urwid.Text(''))
         for key, cmd in self.ui.keys.iteritems():
-            pile.append(self.row('ui', cmd, key))
+            pile.append(crow(ui, cmd, key))
 
-        w = urwid.Filler(urwid.Pile(pile))
-        self.__super.__init__(w)
+        body = urwid.Filler(urwid.Pile(pile))
 
-    def row(self, c, cmd, key):
-        hstring = eval('str(self.%s.%s.__doc__)' % (c, cmd))
-        return urwid.Columns([('fixed', 10, urwid.Text(key)),
-                              urwid.Text(hstring),
-                              ])
+        super(Help, self).__init__(body, header=header)
 
     def keypress(self, size, key):
         if key != '?':

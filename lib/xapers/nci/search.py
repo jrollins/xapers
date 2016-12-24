@@ -177,7 +177,7 @@ class DocWalker(urwid.ListWalker):
         
 ############################################################
 
-class Search(urwid.WidgetWrap):
+class Search(urwid.Frame):
 
     palette = [
         ('head', 'dark blue, bold', ''),
@@ -219,29 +219,32 @@ class Search(urwid.WidgetWrap):
     def __init__(self, ui, query=None):
         self.ui = ui
         self.query = query
+        super(Search, self).__init__(urwid.SolidFill())
+        self.__set_search()
 
-        count = self.ui.db.count(query)
+    def __set_search(self):
+        count = self.ui.db.count(self.query)
         if count == 0:
             self.ui.set_status('No documents found.')
             docs = []
         else:
-            docs = [doc for doc in self.ui.db.search(query)]
+            docs = [doc for doc in self.ui.db.search(self.query)]
         if count == 1:
             cstring = "%d result" % (count)
         else:
             cstring = "%d results" % (count)
 
-        self.ui.set_header([urwid.Columns([
-            urwid.Text("search: \"%s\"" % (self.query)),
-            urwid.Text(cstring, align='right'),
-            ])])
+        htxt = [urwid.Text("Search: %s" % (self.query)),
+                urwid.Text(cstring, align='right'),
+                ]
+        header = urwid.AttrMap(urwid.Columns(htxt), 'header')
+        self.set_header(header)
 
         self.lenitems = count
         self.docwalker = DocWalker(docs)
         self.listbox = urwid.ListBox(self.docwalker)
-        w = self.listbox
-
-        self.__super.__init__(w)
+        body = self.listbox
+        self.set_body(body)
 
     def keypress(self, size, key):
         if key in self.keys:
@@ -255,8 +258,9 @@ class Search(urwid.WidgetWrap):
     def refresh(self):
         """refresh current search results"""
         entry, pos = self.listbox.get_focus()
-        self.ui.newbuffer(['search', self.query])
-        self.ui.killBuffer()
+        self.ui.db.reopen()
+        self.__set_search()
+        self.listbox.set_focus(pos)
 
     def filterSearch(self):
         """filter current search with additional terms"""

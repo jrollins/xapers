@@ -45,39 +45,18 @@ class UI():
         ('?', "help"),
         ])
 
+    default_status_string = "Xapers: s: search, q: kill buffer, Q: quit Xapers, ?: help and additional commands"
+    buffers = []
+
     def __init__(self, cmd=None):
         self.db = initdb()
 
-        self.header_string = "Xapers"
-        self.status_string = "s: search, q: kill buffer, Q: quit Xapers, ?: help and additional commands"
+        # FIXME: set this properly
+        self.palette = list(set(self.palette) | set(Search.palette))
 
         self.view = urwid.Frame(urwid.SolidFill())
-        self.set_header()
+
         self.set_status()
-
-        if not cmd:
-            cmd = ['search', '*']
-
-        if cmd[0] == 'search':
-            query = ' '.join(cmd[1:])
-            self.buffer = Search(self, query)
-        elif cmd[0] == 'bibview':
-            query = ' '.join(cmd[1:])
-            self.buffer = Bibview(self, query)
-        elif cmd[0] == 'help':
-            target = None
-            if len(cmd) > 1:
-                target = cmd[1]
-            if isinstance(target, str):
-                target = None
-            self.buffer = Help(self, target)
-        else:
-            self.buffer = Help(self)
-            self.set_status("Unknown command '%s'." % (cmd[0]))
-
-        self.merge_palette(self.buffer)
-
-        self.view.body = urwid.AttrMap(self.buffer, 'body')
 
         self.mainloop = urwid.MainLoop(
             self.view,
@@ -86,6 +65,11 @@ class UI():
             handle_mouse=False,
             )
         self.mainloop.screen.set_terminal_properties(colors=88)
+
+        if not cmd:
+            cmd = ['search', 'tag:new']
+        self.newbuffer(cmd)
+
         self.mainloop.run()
 
     ##########
@@ -94,18 +78,44 @@ class UI():
         if hasattr(buffer, 'palette'):
             self.palette = list(set(self.palette) | set(buffer.palette))
 
-    def set_header(self, widget=[]):
-        header = urwid.Columns([('pack', urwid.Text('Xapers '))] + widget)
-        self.view.set_header(urwid.AttrMap(header, 'header'))
-
     def set_status(self, text=None):
-        if text:
-            self.status_string = '%s' % (text)
-        self.view.set_footer(urwid.AttrMap(urwid.Text(self.status_string), 'footer'))
+        if not text:
+            text = self.default_status_string
+        self.view.set_footer(urwid.AttrMap(urwid.Text(text), 'footer'))
 
     def newbuffer(self, cmd):
-        UI(cmd=cmd)
+        if not cmd:
+            cmd = ['search', '*']
+
+        if cmd[0] == 'search':
+            query = ' '.join(cmd[1:])
+            buf = Search(self, query)
+        elif cmd[0] == 'bibview':
+            query = ' '.join(cmd[1:])
+            buf = Bibview(self, query)
+        elif cmd[0] == 'help':
+            target = None
+            if len(cmd) > 1:
+                target = cmd[1]
+            if isinstance(target, str):
+                target = None
+            buf = Help(self, target)
+        else:
+            buf = Help(self)
+            self.set_status("Unknown command '%s'." % (cmd[0]))
+        self.buffers.append(buf)
+        self.view.set_body(buf)
         self.set_status()
+
+    def killBuffer(self):
+        """kill current buffer (quit if last buffer)"""
+        if len(self.buffers) == 1:
+            return
+        self.buffers.pop()
+        buf = self.buffers[-1]
+        self.view.set_body(buf)
+        self.set_status()
+        self.mainloop.draw_screen()
 
     def prompt(self, string):
         prompt = PromptEdit(string)
@@ -128,17 +138,13 @@ class UI():
             return
         self.newbuffer(['search', query])
 
-    def killBuffer(self):
-        """kill current buffer (quit if last buffer)"""
-        raise urwid.ExitMainLoop()
-
     def quit(self):
         """quit Xapers"""
         sys.exit()
 
     def help(self):
         """help"""
-        self.newbuffer(['help', self.buffer])
+        self.newbuffer(['help', self.buffers[-1]])
 
     def keypress(self, key):
         if key in self.keys:

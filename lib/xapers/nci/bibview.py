@@ -4,12 +4,13 @@ from ..cli import initdb
 
 ############################################################
 
-class Bibview(urwid.WidgetWrap):
+class Bibview(urwid.Frame):
 
     def __init__(self, ui, query):
         self.ui = ui
 
-        self.ui.set_header([urwid.Text("bibtex: " + query)])
+        htxt = [urwid.Text("Bibtex: " + query)]
+        header = urwid.AttrMap(urwid.Columns(htxt), 'header')
 
         string = ''
 
@@ -22,8 +23,6 @@ class Bibview(urwid.WidgetWrap):
                     if bibtex:
                         string = string + bibtex + '\n'
 
-        self.box = urwid.Filler(urwid.Text(string))
-        w = self.box
+        body = urwid.Filler(urwid.Text(string))
 
-        self.__super.__init__(w)
-
+        super(Bibview, self).__init__(body, header=header)
