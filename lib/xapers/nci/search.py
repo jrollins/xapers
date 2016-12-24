@@ -28,6 +28,14 @@ from ..database import DatabaseLockError
 
 ############################################################
 
+def xdg_open(path):
+    """open document file"""
+    with open(os.devnull) as devnull:
+        subprocess.Popen(['xdg-open', path],
+                         stdin=devnull,
+                         stdout=devnull,
+                         stderr=devnull)
+
 def xclip(text, isfile=False):
     """Copy text or file contents into X clipboard."""
     f = None
@@ -297,10 +305,7 @@ class Search(urwid.WidgetWrap):
             if not os.path.exists(path):
                 self.ui.set_status('ERROR: id:%d: file not found.' % entry.docid)
             self.ui.set_status('opening file: %s...' % path)
-            subprocess.Popen(['xdg-open', path],
-                             stdin=self.ui.devnull,
-                             stdout=self.ui.devnull,
-                             stderr=self.ui.devnull)
+            xdg_open(path)
 
     def viewURL(self):
         """open document URL in browser"""
@@ -313,10 +318,7 @@ class Search(urwid.WidgetWrap):
         # FIXME: open all instead of just first?
         url = urls[0]
         self.ui.set_status('opening url: %s...' % url)
-        subprocess.call(['xdg-open', url],
-                         stdin=self.ui.devnull,
-                         stdout=self.ui.devnull,
-                         stderr=self.ui.devnull)
+        xdg_open(url)
 
     def viewBibtex(self):
         """view document bibtex"""

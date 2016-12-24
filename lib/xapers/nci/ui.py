@@ -54,7 +54,6 @@ class UI():
         self.view = urwid.Frame(urwid.SolidFill())
         self.set_header()
         self.set_status()
-        self.devnull = open('/dev/null', 'rw')
 
         if not cmd:
             cmd = ['search', '*']
