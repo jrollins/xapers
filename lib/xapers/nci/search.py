@@ -141,12 +141,6 @@ class DocItem(urwid.WidgetWrap):
 
         self.__super.__init__(w)
 
-    def selectable(self):
-        return True
-
-    def keypress(self, size, key):
-        return key
-
 ############################################################
 
 class DocWalker(urwid.ListWalker):
@@ -247,22 +241,28 @@ class Search(urwid.Frame):
         self.set_body(body)
 
     def keypress(self, size, key):
+        # reset the status on key presses
+        self.ui.set_status()
+        entry, pos = self.listbox.get_focus()
+        # returns key if not handled, none otherwise
+        if entry and not entry.keypress(size, key):
+            return
         if key in self.keys:
-            cmd = "self.%s()" % (self.keys[key])
-            eval(cmd)
+            cmd = eval("self.%s" % (self.keys[key]))
+            cmd(size, key)
         else:
-            self.ui.keypress(key)
+            return key
 
     ##########
 
-    def refresh(self):
+    def refresh(self, size, key):
         """refresh current search results"""
         entry, pos = self.listbox.get_focus()
         self.ui.db.reopen()
         self.__set_search()
         self.listbox.set_focus(pos)
 
-    def filterSearch(self):
+    def filterSearch(self, size, key):
         """filter current search with additional terms"""
         prompt = 'filter search: '
         urwid.connect_signal(self.ui.prompt(prompt), 'done', self._filterSearch_done)
@@ -275,29 +275,29 @@ class Search(urwid.Frame):
             return
         self.ui.newbuffer(['search', self.query, newquery])
 
-    def nextEntry(self):
+    def nextEntry(self, size, key):
         """next entry"""
         entry, pos = self.listbox.get_focus()
         if not entry: return
         if pos + 1 >= self.lenitems: return
         self.listbox.set_focus(pos + 1)
 
-    def prevEntry(self):
+    def prevEntry(self, size, key):
         """previous entry"""
         entry, pos = self.listbox.get_focus()
         if not entry: return
         if pos == 0: return
         self.listbox.set_focus(pos - 1)
 
-    def lastEntry(self):
+    def lastEntry(self, size, key):
         """last entry"""
         self.listbox.set_focus(-1)
 
-    def firstEntry(self):
+    def firstEntry(self, size, key):
         """first entry"""
         self.listbox.set_focus(0)
 
-    def viewFile(self):
+    def viewFile(self, size, key):
         """open document file"""
         entry = self.listbox.get_focus()[0]
         if not entry: return
@@ -311,7 +311,7 @@ class Search(urwid.Frame):
             self.ui.set_status('opening file: %s...' % path)
             xdg_open(path)
 
-    def viewURL(self):
+    def viewURL(self, size, key):
         """open document URL in browser"""
         entry = self.listbox.get_focus()[0]
         if not entry: return
@@ -324,13 +324,13 @@ class Search(urwid.Frame):
         self.ui.set_status('opening url: %s...' % url)
         xdg_open(url)
 
-    def viewBibtex(self):
+    def viewBibtex(self, size, key):
         """view document bibtex"""
         entry = self.listbox.get_focus()[0]
         if not entry: return
         self.ui.newbuffer(['bibview', 'id:' + str(entry.docid)])
 
-    def copyID(self):
+    def copyID(self, size, key):
         """copy document ID to clipboard"""
         entry = self.listbox.get_focus()[0]
         if not entry: return
@@ -338,7 +338,7 @@ class Search(urwid.Frame):
         xclip(docid)
         self.ui.set_status('yanked docid: %s' % docid)
 
-    def copyKey(self):
+    def copyKey(self, size, key):
         """copy document bibtex key to clipboard"""
         entry = self.listbox.get_focus()[0]
         if not entry: return
@@ -346,7 +346,7 @@ class Search(urwid.Frame):
         xclip(bibkey)
         self.ui.set_status('yanked bibkey: %s' % bibkey)
 
-    def copyPath(self):
+    def copyPath(self, size, key):
         """copy document file path to clipboard"""
         entry = self.listbox.get_focus()[0]
         if not entry: return
@@ -357,7 +357,7 @@ class Search(urwid.Frame):
         xclip(path)
         self.ui.set_status('yanked path: %s' % path)
 
-    def copyURL(self):
+    def copyURL(self, size, key):
         """copy document URL to clipboard"""
         entry = self.listbox.get_focus()[0]
         if not entry: return
@@ -370,7 +370,7 @@ class Search(urwid.Frame):
         xclip(url)
         self.ui.set_status('yanked url: %s' % url)
 
-    def copyBibtex(self):
+    def copyBibtex(self, size, key):
         """copy document bibtex to clipboard"""
         entry = self.listbox.get_focus()[0]
         if not entry: return
@@ -381,11 +381,11 @@ class Search(urwid.Frame):
         xclip(bibtex, isfile=True)
         self.ui.set_status('yanked bibtex: %s' % bibtex)
 
-    def addTags(self):
+    def addTags(self, size, key):
         """add tags to document (space separated)"""
         self.promptTag('+')
 
-    def removeTags(self):
+    def removeTags(self, size, key):
         """remove tags from document (space separated)"""
         self.promptTag('-')
 
@@ -425,7 +425,7 @@ class Search(urwid.Frame):
         self.ui.db.reopen()
         self.ui.set_status(msg)
 
-    def archive(self):
+    def archive(self, size, key):
         """archive document (remove 'new' tag) and advance"""
         self._promptTag_done('new', '-')
         self.nextEntry()
