@@ -64,6 +64,8 @@ class DocItem(urwid.WidgetWrap):
               #'summary',
               ]
 
+    keys = collections.OrderedDict([])
+
     def __init__(self, doc, doc_ind, total_docs):
         self.doc = doc
         self.docid = self.doc.docid
@@ -256,6 +258,14 @@ class Search(urwid.Frame):
             cmd(size, key)
         else:
             return key
+
+    def help(self):
+        lines = []
+        for o in [DocItem, self]:
+            for k, cmd in o.keys.items():
+                h = str(getattr(getattr(o, cmd), '__doc__'))
+                lines.append((k, h))
+        return lines
 
     ##########
 

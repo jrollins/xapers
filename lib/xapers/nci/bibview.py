@@ -24,3 +24,6 @@ class Bibview(urwid.Frame):
         body = urwid.Filler(urwid.Text(string))
 
         super(Bibview, self).__init__(body, header=header)
+
+    def help(self):
+        return []

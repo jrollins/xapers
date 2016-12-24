@@ -16,26 +16,28 @@ class Help(urwid.Frame):
 
         pile = []
 
-        # write command help row
-        def crow(c, cmd, key):
-            f = getattr(c, cmd)
-            hstring = str(getattr(f, '__doc__'))
-            return urwid.Columns([('fixed', 10, urwid.Text(key)),
-                                  urwid.Text(hstring),
+        # format command help line
+        def fch(k, h):
+            return urwid.Columns([('fixed', 10, urwid.Text(k)),
+                                  urwid.Text(h),
                                   ])
 
-        if target and hasattr(target, 'keys'):
-            pile.append(urwid.Text('%s commands:' % (tname)))
-            pile.append(urwid.Text(''))
-            for key, cmd in target.keys.iteritems():
-                pile.append(crow(target, cmd, key))
-            pile.append(urwid.Text(''))
-            pile.append(urwid.Text(''))
+        if target:
+            hl = target.help()
+            if hl:
+                pile.append(urwid.Text('%s commands:' % (tname)))
+                pile.append(urwid.Text(''))
+                for k,h in hl:
+                    pile.append(fch(k,h))
+                pile.append(urwid.Text(''))
+                pile.append(urwid.Text(''))
 
         pile.append(urwid.Text('Global commands:'))
         pile.append(urwid.Text(''))
-        for key, cmd in self.ui.keys.iteritems():
-            pile.append(crow(ui, cmd, key))
+        for k, cmd in self.ui.keys.iteritems():
+            f = getattr(ui, cmd)
+            h = str(getattr(f, '__doc__'))
+            pile.append(fch(k,h))
 
         body = urwid.Filler(urwid.Pile(pile))
 
