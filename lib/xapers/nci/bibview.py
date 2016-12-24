@@ -27,5 +27,3 @@ class Bibview(urwid.WidgetWrap):
 
         self.__super.__init__(w)
 
-    def keypress(self, size, key):
-        self.ui.keypress(key)
