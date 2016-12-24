@@ -193,6 +193,10 @@ class Search(urwid.Frame):
         ('down', "nextEntry"),
         ('p', "prevEntry"),
         ('up', "prevEntry"),
+        ('N', "pageDown"),
+        ('page down', "pageDown"),
+        ('P', "pageUp"),
+        ('page up', "pageUp"),
         ('<', "firstEntry"),
         ('>', "lastEntry"),
         ('=', "refresh"),
@@ -288,6 +292,16 @@ class Search(urwid.Frame):
         if not entry: return
         if pos == 0: return
         self.listbox.set_focus(pos - 1)
+
+    def pageDown(self, size, key):
+        """page down"""
+        self.listbox.keypress(size, 'page down')
+        self.listbox.set_focus_valign('bottom')
+
+    def pageUp(self, size, key):
+        """page up"""
+        self.listbox.keypress(size, 'page up')
+        self.listbox.set_focus_valign('top')
 
     def lastEntry(self, size, key):
         """last entry"""
