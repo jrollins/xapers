@@ -190,7 +190,7 @@ class DocItem(urwid.WidgetWrap):
             xdg_open(path)
 
     def viewURL(self):
-        """open document URL in browser"""
+        """open document source URL in browser"""
         urls = self.doc.get_urls()
         if not urls:
             self.ui.set_status('No URLs for document {}.'.format(self.docid))
@@ -213,7 +213,7 @@ class DocItem(urwid.WidgetWrap):
         """copy document bibtex key to clipboard"""
         bibkey = self.doc.get_key()
         xclip(bibkey)
-        self.ui.set_status('yanked bibkey: {}'.format(bibkey))
+        self.ui.set_status('yanked bibtex key: {}'.format(bibkey))
 
     def copyPath(self):
         """copy document file path to clipboard"""
@@ -222,10 +222,10 @@ class DocItem(urwid.WidgetWrap):
             self.ui.set_status('No files for document {}.'.format(self.docid))
             return
         xclip(path)
-        self.ui.set_status('yanked path: {}'.format(path))
+        self.ui.set_status('yanked file path: {}'.format(path))
 
     def copyURL(self):
-        """copy document URL to clipboard"""
+        """copy document source URL to clipboard"""
         urls = self.doc.get_urls()
         if not urls:
             self.ui.set_status('No URLs for document {}.'.format(self.docid))
@@ -233,7 +233,7 @@ class DocItem(urwid.WidgetWrap):
         # FIXME: copy all instead of just first?
         url = urls[0]
         xclip(url)
-        self.ui.set_status('yanked url: {}'.format(url))
+        self.ui.set_status('yanked source url: {}'.format(url))
 
     def copyBibtex(self):
         """copy document bibtex to clipboard"""
