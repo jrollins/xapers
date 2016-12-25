@@ -68,6 +68,7 @@ class DocItem(urwid.WidgetWrap):
               'journal',
               'year',
               'source',
+              'bibkey',
               #'tags',
               #'file',
               #'summary',
@@ -96,6 +97,7 @@ class DocItem(urwid.WidgetWrap):
         field_data = dict.fromkeys(self.FIELDS, '')
 
         field_data['tags'] = ' '.join(doc.get_tags())
+        field_data['bibkey'] = doc.get_key() or ''
 
         bibdata = doc.get_bibdata()
         if bibdata:
@@ -130,7 +132,7 @@ class DocItem(urwid.WidgetWrap):
         field_data['summary'] = summary
 
         def gen_field_row(field, value):
-            if field in ['journal', 'year', 'source']:
+            if field in ['journal', 'year', 'source', 'bibkey']:
                 color = 'journal'
             elif field in ['file']:
                 color = 'field'
