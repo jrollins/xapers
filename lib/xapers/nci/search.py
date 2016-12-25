@@ -36,19 +36,11 @@ def xdg_open(path):
                          stdout=devnull,
                          stderr=devnull)
 
-def xclip(text, isfile=False):
-    """Copy text or file contents into X clipboard."""
-    f = None
-    if isfile:
-        f = open(text, 'r')
-        sin = f
-    else:
-        sin = subprocess.PIPE
+def xclip(text):
+    """Copy text into X clipboard."""
     p = subprocess.Popen(["xclip", "-i"],
-                         stdin=sin)
-    p.communicate(text)
-    if f:
-        f.close()
+                         stdin=subprocess.PIPE)
+    p.communicate(text.encode('utf-8'))
 
 ############################################################
 
