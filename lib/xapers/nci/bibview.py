@@ -7,7 +7,7 @@ class Bibview(urwid.Frame):
     def __init__(self, ui, query):
         self.ui = ui
 
-        htxt = [urwid.Text("Bibtex: " + query)]
+        htxt = [urwid.Text("Bibview: " + query)]
         header = urwid.AttrMap(urwid.Columns(htxt), 'header')
 
         string = ''

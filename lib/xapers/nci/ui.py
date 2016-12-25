@@ -45,7 +45,7 @@ class UI():
         ('?', "help"),
         ])
 
-    default_status_string = "Xapers: s: search, q: kill buffer, Q: quit Xapers, ?: help and additional commands"
+    default_status_string = "s: search, q: close buffer, Q: quit, ?: help and additional commands"
     buffers = []
     search_history = []
 
@@ -109,7 +109,7 @@ class UI():
         self.set_status()
 
     def killBuffer(self):
-        """kill current buffer (quit if last buffer)"""
+        """close current buffer"""
         if len(self.buffers) == 1:
             return
         self.buffers.pop()
@@ -157,7 +157,7 @@ class UI():
         self.newbuffer(['search', query])
 
     def quit(self):
-        """quit Xapers"""
+        """quit"""
         sys.exit()
 
     def help(self):
