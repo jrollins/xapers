@@ -263,7 +263,9 @@ class DocItem(urwid.WidgetWrap):
         elif sign is '-':
             completions = self.doc.get_tags()
         self.ui.prompt((self.applyTags, []),
-                       prompt, initial=initial, completions=completions)
+                       prompt, initial=initial,
+                       completions=completions,
+                       history=self.ui.tag_history)
 
     def applyTags(self, tag_string):
         if not tag_string:
@@ -284,6 +286,10 @@ class DocItem(urwid.WidgetWrap):
                 msg = "applied tags: {}".format(tag_string)
             tags = doc.get_tags()
             self.tag_field.set_text(' '.join(tags))
+            if self.ui.tag_history and tag_string == self.ui.tag_history[-1]:
+                pass
+            else:
+                self.ui.tag_history.append(tag_string)
         except DatabaseLockError as e:
             msg = e.msg
         self.ui.db.reopen()

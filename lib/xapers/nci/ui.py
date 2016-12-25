@@ -48,6 +48,7 @@ class UI():
     default_status_string = "s: search, q: close buffer, Q: quit, ?: help and additional commands"
     buffers = []
     search_history = []
+    tag_history = []
 
     def __init__(self, cmd=None):
         self.db = initdb()
