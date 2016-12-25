@@ -157,12 +157,69 @@ class PromptEdit(urwid.Edit):
     __metaclass__ = urwid.signals.MetaSignals
     signals = ['done']
 
+    def __init__(self, prompt, initial=None, completions=None, history=None):
+        super(PromptEdit, self).__init__(caption=prompt)
+        if initial:
+            self.insert_text(initial)
+        self.completions = completions
+        self.completion_data = {}
+        self.history = history
+        self.history_pos = -1
+        self.last_text = ''
+
     def keypress(self, size, key):
+        if self.last_text and self.edit_text != self.last_text:
+            self.completion_data.clear()
+            self.history_pos = -1
+
         if key == 'enter':
             urwid.emit_signal(self, 'done', self.get_edit_text())
             return
-        elif key == 'esc':
+        elif key in ['esc', 'ctrl g']:
             urwid.emit_signal(self, 'done', None)
             return
-
-        urwid.Edit.keypress(self, size, key)
+        elif key == 'ctrl a':
+            key = 'home'
+        elif key == 'ctrl e':
+            key = 'end'
+        elif key == 'ctrl k':
+            self._delete_highlighted()
+            self.set_edit_text(self.edit_text[:self.edit_pos])
+        elif key in ['up', 'ctrl p']:
+            if self.history:
+                if self.history_pos == -1:
+                    self.history_full = self.history + [self.edit_text]
+                try:
+                    self.history_pos -= 1
+                    self.set_edit_text(self.history_full[self.history_pos])
+                    self.set_edit_pos(len(self.edit_text))
+                except IndexError:
+                    self.history_pos += 1
+        elif key in ['down', 'ctrl n']:
+            if self.history:
+                if self.history_pos != -1:
+                    self.history_pos += 1
+                    self.set_edit_text(self.history_full[self.history_pos])
+                    self.set_edit_pos(len(self.edit_text))
+        elif key == 'tab' and self.completions:
+            before = self.edit_text[:self.edit_pos]
+            if self.completion_data:
+                if before != self.completion_data['before']:
+                    self.completion_data.clear()
+            if self.completion_data:
+                self.completion_data['q'].rotate(-1)
+            else:
+                self.completion_data['before'] = before
+                # harvest completions
+                q = collections.deque()
+                for c in self.completions:
+                    if c.startswith(before):
+                        q.append(c)
+                self.completion_data['q'] = q
+            # insert completions
+            if self.completion_data and self.completion_data['q']:
+                pos = self.edit_pos
+                self.set_edit_text(self.completion_data['q'][0])
+                self.set_edit_pos(pos)
+        self.last_text = self.edit_text
+        return super(PromptEdit, self).keypress(size, key)
