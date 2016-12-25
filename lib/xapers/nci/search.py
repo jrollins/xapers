@@ -333,6 +333,7 @@ class Search(urwid.Frame):
         ('a', "archive"),
         ('=', "refresh"),
         ('l', "filterSearch"),
+        ('B', "viewBibtex"),
         ])
 
     def __init__(self, ui, query=None):
@@ -448,3 +449,7 @@ class Search(urwid.Frame):
             return
         entry.applyTags('-new')
         self.nextEntry(None, None)
+
+    def viewBibtex(self, size, key):
+        """view search bibtex"""
+        self.ui.newbuffer(['bibview', self.query])
