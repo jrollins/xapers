@@ -212,6 +212,9 @@ class DocItem(urwid.WidgetWrap):
     def copyKey(self):
         """copy document bibtex key to clipboard"""
         bibkey = self.doc.get_key()
+        if not bibkey:
+            self.ui.set_status('No bibtex key for document {}.'.format(self.docid))
+            return
         xclip(bibkey)
         self.ui.set_status('yanked bibtex key: {}'.format(bibkey))
 
