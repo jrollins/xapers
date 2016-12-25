@@ -21,9 +21,15 @@ class Bibview(urwid.Frame):
                 if bibtex:
                     string = string + bibtex + '\n'
 
-        body = urwid.Filler(urwid.Text(string))
+        content = [urwid.Text(s) for s in string.split('\n')]
+        body = urwid.ListBox(urwid.SimpleListWalker(content))
 
         super(Bibview, self).__init__(body, header=header)
 
     def help(self):
         return []
+
+    def keypress(self, size, key):
+        if key == ' ':
+            return self.get_body().keypress(size, 'page down')
+        return super(Bibview, self).keypress(size, key)

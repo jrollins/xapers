@@ -39,10 +39,14 @@ class Help(urwid.Frame):
             h = str(getattr(f, '__doc__'))
             pile.append(fch(k,h))
 
-        body = urwid.Filler(urwid.Pile(pile))
+        body = urwid.ListBox(urwid.SimpleListWalker(pile))
 
         super(Help, self).__init__(body, header=header)
 
     def keypress(self, size, key):
-        if key != '?':
-            return key
+        # ignore help in help
+        if key == '?':
+            return
+        if key == ' ':
+            return self.get_body().keypress(size, 'page down')
+        return super(Help, self).keypress(size, key)
