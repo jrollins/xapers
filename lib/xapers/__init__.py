@@ -18,8 +18,8 @@ Copyright 2012-2016
 Jameson Rollins <jrollins@finestructure.net>
 """
 
-from database import Database
-from database import DatabaseError
-from database import DatabaseUninitializedError
-from database import DatabaseLockError
-from documents import Documents, Document
+from .database import Database
+from .database import DatabaseError
+from .database import DatabaseUninitializedError
+from .database import DatabaseLockError
+from .documents import Documents, Document

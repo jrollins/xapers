@@ -22,8 +22,8 @@ import os
 import sys
 import xapian
 
-from source import Sources
-from documents import Documents, Document
+from .source import Sources
+from .documents import Documents, Document
 
 # FIXME: add db schema documentation
 

@@ -24,9 +24,9 @@ import urwid
 import collections
 
 from ..cli import initdb
-from search import Search
-from bibview import Bibview
-from help import Help
+from . import search
+from . import bibview
+from . import help
 
 ############################################################
 
@@ -90,19 +90,19 @@ class UI():
 
         if cmd[0] == 'search':
             query = ' '.join(cmd[1:])
-            buf = Search(self, query)
+            buf = search.Search(self, query)
         elif cmd[0] == 'bibview':
             query = ' '.join(cmd[1:])
-            buf = Bibview(self, query)
+            buf = bibview.Bibview(self, query)
         elif cmd[0] == 'help':
             target = None
             if len(cmd) > 1:
                 target = cmd[1]
             if isinstance(target, str):
                 target = None
-            buf = Help(self, target)
+            buf = help.Help(self, target)
         else:
-            buf = Help(self)
+            buf = help.Help(self)
             self.set_status("Unknown command '%s'." % (cmd[0]))
         self.buffers.append(buf)
         self.view.set_body(buf)

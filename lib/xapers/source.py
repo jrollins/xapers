@@ -23,8 +23,8 @@ import re
 import pkgutil
 from urlparse import urlparse
 
-import sources
-from parser import parse_file
+from . import sources
+from .parser import parse_file
 
 ##################################################
 

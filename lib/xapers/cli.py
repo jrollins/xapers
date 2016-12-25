@@ -24,11 +24,11 @@ import sets
 import shutil
 import readline
 
-import database
-from documents import Document
-from source import Sources, SourceError
-from parser import ParseError
-from bibtex import Bibtex, BibtexError
+from . import database
+from .documents import Document
+from .source import Sources, SourceError
+from .parser import ParseError
+from .bibtex import Bibtex, BibtexError
 
 ############################################################
 

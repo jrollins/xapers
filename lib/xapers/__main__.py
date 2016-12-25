@@ -23,10 +23,10 @@ import sys
 import codecs
 import signal
 
-import cli
-from source import Sources, SourceError
-from bibtex import Bibtex, BibtexError
-from parser import ParseError
+from . import cli
+from .source import Sources, SourceError
+from .bibtex import Bibtex, BibtexError
+from .parser import ParseError
 
 ########################################################################
 

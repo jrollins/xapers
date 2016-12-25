@@ -22,9 +22,9 @@ import os
 import shutil
 import xapian
 
-from parser import parse_data
-from source import Sources
-from bibtex import Bibtex
+from .parser import parse_data
+from .source import Sources
+from .bibtex import Bibtex
 
 ##################################################
 
