@@ -47,6 +47,7 @@ class UI():
 
     default_status_string = "Xapers: s: search, q: kill buffer, Q: quit Xapers, ?: help and additional commands"
     buffers = []
+    search_history = []
 
     def __init__(self, cmd=None):
         self.db = initdb()
@@ -117,25 +118,42 @@ class UI():
         self.set_status()
         self.mainloop.draw_screen()
 
-    def prompt(self, string):
-        prompt = PromptEdit(string)
-        self.view.set_footer(urwid.AttrMap(prompt, 'prompt'))
+    def prompt(self, final, *args, **kwargs):
+        """user prompt
+
+        final is a (func, args) tuple to be executed upon complection:
+        func(text, *args)
+
+        further args and kwargs are passed to PromptEdit
+
+        """
+        pe = PromptEdit(*args, **kwargs)
+        urwid.connect_signal(pe, 'done', self.prompt_done, final)
+        self.view.set_footer(urwid.AttrMap(pe, 'prompt'))
         self.view.set_focus('footer')
-        return prompt
+
+    def prompt_done(self, text, final):
+        self.view.set_focus('body')
+        urwid.disconnect_signal(self, self.prompt, 'done', self.prompt_done)
+        (func, args) = final
+        func(text, *args)
 
     ##########
 
     def promptSearch(self):
         """search database"""
         prompt = 'search: '
-        urwid.connect_signal(self.prompt(prompt), 'done', self._promptSearch_done)
+        self.prompt((self.promptSearch_done, []),
+                    prompt, history=self.search_history)
 
-    def _promptSearch_done(self, query):
-        self.view.set_focus('body')
-        urwid.disconnect_signal(self, self.prompt, 'done', self._promptSearch_done)
+    def promptSearch_done(self, query):
         if not query:
             self.set_status()
             return
+        if self.search_history and query == self.search_history[-1]:
+            pass
+        else:
+            self.search_history.append(query)
         self.newbuffer(['search', query])
 
     def quit(self):

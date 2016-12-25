@@ -395,12 +395,11 @@ class Search(urwid.Frame):
 
     def filterSearch(self, size, key):
         """filter current search with additional terms"""
-        prompt = 'filter search: '
-        urwid.connect_signal(self.ui.prompt(prompt), 'done', self._filterSearch_done)
+        prompt = 'filter search: {} '.format(self.query)
+        self.ui.prompt((self.filterSearch_done, []),
+                       prompt)
 
-    def _filterSearch_done(self, newquery):
-        self.ui.view.set_focus('body')
-        urwid.disconnect_signal(self.ui, self.ui.prompt, 'done', self._filterSearch_done)
+    def filterSearch_done(self, newquery):
         if not newquery:
             self.ui.set_status()
             return
