@@ -30,13 +30,13 @@ from . import help
 
 ############################################################
 
-class UI():
+PALETTE = [
+    ('header', 'white', 'dark blue'),
+    ('footer', 'white', 'dark blue'),
+    ('prompt', 'black', 'dark green'),
+    ]
 
-    palette = [
-        ('header', 'white', 'dark blue'),
-        ('footer', 'white', 'dark blue'),
-        ('prompt', 'black', 'dark green'),
-        ]
+class UI():
 
     keys = collections.OrderedDict([
         ('s', "promptSearch"),
@@ -53,7 +53,7 @@ class UI():
         self.db = initdb()
 
         # FIXME: set this properly
-        self.palette = list(set(self.palette) | set(Search.palette))
+        self.palette = list(set(PALETTE) | set(search.PALETTE))
 
         self.view = urwid.Frame(urwid.SolidFill())
 
@@ -75,9 +75,6 @@ class UI():
 
     ##########
 
-    def merge_palette(self, buffer):
-        if hasattr(buffer, 'palette'):
-            self.palette = list(set(self.palette) | set(buffer.palette))
 
     def set_status(self, text=None):
         if not text:

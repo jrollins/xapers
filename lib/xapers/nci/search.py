@@ -26,6 +26,23 @@ import collections
 from ..cli import initdb
 from ..database import DatabaseLockError
 
+PALETTE = [
+    ('head', 'dark blue, bold', ''),
+    ('head focus', 'white, bold', 'dark blue'),
+    ('field', 'light gray', ''),
+    ('field focus', '', 'dark gray', '', '', 'g19'),
+    ('tags', 'dark green', ''),
+    ('tags focus', 'light green', 'dark blue'),
+    ('title', 'yellow', ''),
+    ('title focus', 'yellow', 'dark gray', '', 'yellow', 'g19'),
+    ('authors', 'light cyan', ''),
+    ('authors focus', 'light cyan', 'dark gray', '', 'light cyan', 'g19'),
+    ('journal', 'dark magenta', '',),
+    ('journal focus', 'dark magenta', 'dark gray', '', 'dark magenta', 'g19'),
+    ('bibkey', 'dark magenta', '',),
+    ('bibkey focus', 'dark magenta', 'dark gray', '', 'dark magenta', 'g19'),
+    ]
+
 ############################################################
 
 def xdg_open(path):
@@ -299,21 +316,6 @@ class DocWalker(urwid.ListWalker):
 ############################################################
 
 class Search(urwid.Frame):
-
-    palette = [
-        ('head', 'dark blue, bold', ''),
-        ('head focus', 'white, bold', 'dark blue'),
-        ('field', 'light gray', ''),
-        ('field focus', '', 'dark gray', '', '', 'g19'),
-        ('tags', 'dark green', ''),
-        ('tags focus', 'light green', 'dark blue'),
-        ('title', 'yellow', ''),
-        ('title focus', 'yellow', 'dark gray', '', 'yellow', 'g19'),
-        ('authors', 'light cyan', ''),
-        ('authors focus', 'light cyan', 'dark gray', '', 'light cyan', 'g19'),
-        ('journal', 'dark magenta', '',),
-        ('journal focus', 'dark magenta', 'dark gray', '', 'dark magenta', 'g19'),
-        ]
 
     keys = collections.OrderedDict([
         ('n', "nextEntry"),
