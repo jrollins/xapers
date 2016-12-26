@@ -78,9 +78,13 @@ class UI():
 
 
     def set_status(self, text=None):
-        if not text:
-            text = self.default_status_string
-        self.view.set_footer(urwid.AttrMap(urwid.Text(text), 'footer'))
+        if text:
+            T = [urwid.Text(text)]
+        else:
+            T = [urwid.Text('Xapers [{}]'.format(len(self.buffers))),
+                 urwid.Text(self.default_status_string, align='right'),
+                 ]
+        self.view.set_footer(urwid.AttrMap(urwid.Columns(T), 'footer'))
 
     def newbuffer(self, cmd):
         if not cmd:
