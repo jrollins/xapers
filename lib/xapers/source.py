@@ -159,7 +159,7 @@ class Sources(object):
         if extra:
             for path in extra.split(':'):
                 if path:
-                    sourcespath.insert(0, path)
+                    self.sourcespath.insert(0, path)
         else:
             self.sourcespath.insert(0, os.path.expanduser(os.path.join('~','.xapers','sources')))
 
