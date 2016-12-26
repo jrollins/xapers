@@ -335,6 +335,7 @@ class Search(urwid.Frame):
         ('up', "prevEntry"),
         ('N', "pageDown"),
         ('page down', "pageDown"),
+        (' ', "pageDown"),
         ('P', "pageUp"),
         ('page up', "pageUp"),
         ('<', "firstEntry"),
