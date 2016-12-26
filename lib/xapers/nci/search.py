@@ -363,7 +363,8 @@ class Search(urwid.Frame):
         else:
             cstring = "%d results" % (count)
 
-        htxt = [urwid.Text("Search: %s" % (self.query)),
+        htxt = [('pack', urwid.Text("Search: ")),
+                ('pack', urwid.AttrMap(urwid.Text("%s" % (self.query), align='left'), 'header_args')),
                 urwid.Text(cstring, align='right'),
                 ]
         header = urwid.AttrMap(urwid.Columns(htxt), 'header')

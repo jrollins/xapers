@@ -31,8 +31,9 @@ from . import help
 ############################################################
 
 PALETTE = [
-    ('header', 'white', 'dark blue'),
-    ('footer', 'white', 'dark blue'),
+    ('header', 'light gray', 'dark blue'),
+    ('header_args', 'white', 'dark blue'),
+    ('footer', 'light gray', 'dark blue'),
     ('prompt', 'black', 'dark green'),
     ]
 
