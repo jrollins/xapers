@@ -199,13 +199,69 @@ class PromptEdit(urwid.Edit):
         elif key in ['esc', 'ctrl g']:
             urwid.emit_signal(self, 'done', None)
             return
+
+        # navigation
         elif key == 'ctrl a':
+            # move to beginning
             key = 'home'
         elif key == 'ctrl e':
+            # move to end
             key = 'end'
+        elif key == 'ctrl b':
+            # back character
+            self.set_edit_pos(self.edit_pos-1)
+        elif key == 'ctrl f':
+            # forward character
+            self.set_edit_pos(self.edit_pos+1)
+        elif key == 'meta b':
+            # back word
+            text = self.edit_text
+            pos = self.edit_pos - 1
+            inword = False
+            while True:
+                try:
+                    text[pos]
+                except IndexError:
+                    break
+                if text[pos] != ' ' and not inword:
+                    inword = True
+                    continue
+                if inword:
+                    if text[pos] == ' ':
+                        break
+                pos -= 1
+            self.set_edit_pos(pos+1)
+        elif key == 'meta f':
+            # forward word
+            text = self.edit_text
+            pos = self.edit_pos
+            inword = False
+            while True:
+                try:
+                    text[pos]
+                except IndexError:
+                    break
+                if text[pos] != ' ' and not inword:
+                    inword = True
+                    continue
+                if inword:
+                    if text[pos] == ' ':
+                        break
+                pos += 1
+            self.set_edit_pos(pos+1)
+
+        # deletion
+        elif key == 'ctrl d':
+            # delete character
+            text = self.edit_text
+            pos = self.edit_pos
+            ntext = text[:pos] + text[pos+1:]
+            self.set_edit_text(ntext)
         elif key == 'ctrl k':
-            self._delete_highlighted()
+            # delete to end
             self.set_edit_text(self.edit_text[:self.edit_pos])
+
+        # history
         elif key in ['up', 'ctrl p']:
             if self.history:
                 if self.history_pos == -1:
@@ -222,6 +278,8 @@ class PromptEdit(urwid.Edit):
                     self.history_pos += 1
                     self.set_edit_text(self.history_full[self.history_pos])
                     self.set_edit_pos(len(self.edit_text))
+
+        # tab completion
         elif key == 'tab' and self.completions:
             before = self.edit_text[:self.edit_pos]
             if self.completion_data:
