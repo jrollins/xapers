@@ -82,10 +82,10 @@ class DocItem(urwid.WidgetWrap):
         ('+', "addTags"),
         ('-', "removeTags"),
         ('meta i', "copyID"),
-        ('meta k', "copyKey"),
-        ('meta f', "copyPath"),
         ('meta u', "copyURL"),
         ('meta b', "copyBibtex"),
+        ('meta k', "copyKey"),
+        ('meta f', "copyPath"),
         ])
 
     def __init__(self, ui, doc, doc_ind, total_docs):
