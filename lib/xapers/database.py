@@ -231,7 +231,7 @@ class Database():
                 yield term.term
 
     def term_iter(self, name=None):
-        """Iterator over all terms in the database.
+        """Generator of all terms in the database.
 
         If a prefix is provided, will iterate over only the prefixed
         terms, and the prefix will be removed from the returned terms.
@@ -244,14 +244,25 @@ class Database():
                 prefix = name
         return self._term_iter(prefix)
 
-    def get_sids(self):
-        """Get all sources in database."""
-        sids = []
-        # FIXME: do this more efficiently
+    def sid_iter(self):
+        """Generator of all source ids in database"""
         for source in self.term_iter('source'):
+            # FIXME: do this more efficiently
             for oid in self._term_iter(self._make_source_prefix(source)):
-                sids.append('%s:%s' % (source, oid))
-        return sids
+                yield '%s:%s' % (source, oid)
+
+    def get_sids(self):
+        """Get all source ids in database as a list"""
+        return [sid for sid in self.sid_iter()]
+
+    def tag_iter(self):
+        """Generator of all tags in database"""
+        for tag in self.term_iter('tag'):
+            yield tag
+
+    def get_tags(self):
+        """Get all tags in database as a list"""
+        return [tag for tag in self.tag_iter()]
 
     ########################################
 

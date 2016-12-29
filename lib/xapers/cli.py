@@ -380,11 +380,11 @@ def importbib(db, bibfile, tags=[], overwrite=False):
 def search(db, query_string, oformat='summary', limit=None):
     if query_string == '*' and oformat in ['tags','sources','keys']:
         if oformat == 'tags':
-            for tag in db.term_iter('tag'):
+            for tag in db.tag_iter():
                 print tag
         elif oformat == 'sources':
-            for source in db.get_sids():
-                print source
+            for sid in db.sid_iter():
+                print sid
         elif oformat == 'keys':
             for key in db.term_iter('key'):
                 print key
