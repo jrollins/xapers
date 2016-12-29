@@ -1,4 +1,5 @@
 import urwid
+import logging
 
 ############################################################
 
@@ -23,14 +24,16 @@ class Help(urwid.Frame):
                                   ])
 
         if target:
-            hl = target.help()
-            if hl:
-                pile.append(urwid.Text('%s commands:' % (tname)))
-                pile.append(urwid.Text(''))
-                for k,h in hl:
+            for k,h in target.help():
+                if not k:
+                    pile.append(urwid.Text(''))
+                    pile.append(urwid.Text(''))
+                    pile.append(urwid.Text(h))
+                    pile.append(urwid.Text(''))
+                else:
                     pile.append(fch(k,h))
-                pile.append(urwid.Text(''))
-                pile.append(urwid.Text(''))
+            pile.append(urwid.Text(''))
+            pile.append(urwid.Text(''))
 
         pile.append(urwid.Text('Global commands:'))
         pile.append(urwid.Text(''))
@@ -50,3 +53,6 @@ class Help(urwid.Frame):
         if key == ' ':
             return self.get_body().keypress(size, 'page down')
         return super(Help, self).keypress(size, key)
+
+    def help(self):
+        return []

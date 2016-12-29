@@ -402,11 +402,15 @@ class Search(urwid.Frame):
 
     def help(self):
         lines = []
-        for o in [DocItem, self]:
+        def get_keys(o):
             for k, cmd in o.keys.items():
-                h = str(getattr(getattr(o, cmd), '__doc__'))
-                lines.append((k, h))
-        return lines
+                yield (k, str(getattr(getattr(o, cmd), '__doc__')))
+        yield (None, "Document commands:")
+        for o in get_keys(DocItem):
+            yield o
+        yield (None, "Search commands:")
+        for o in get_keys(Search):
+            yield o
 
     ##########
 
