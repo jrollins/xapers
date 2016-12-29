@@ -1,26 +1,19 @@
-* put key in nci
-* tag auto-complete in nci
-* nci buffers don't work (no screen redraw on buffer close)
-* nci bibtex view doesn't scroll to handle large files
+* translate bibtex journal abbreviations
 * rename files when being added?
-* history in nci (search, tags, etc)
 * better resolve conflicts
+* unique bibtex keys (handle conflicting)
 * "notes" for documents (editable txt file)
 * need *something* for docs without sources
    * store at least URL
 
-* unique bibtex keys (handle conflicting)
-   
-* BUG: can not add --file when source contains '/'
-   * "xapers add --source=arXiv:hep-th/9806203 --file"
-* DB VERSION
 * separate add and update commands
-* add only opens writable db on doc.sync()
 * set/get title, author, tags as data or values (is this faster?)
-* pdf thumbnails:
+* gtk gui, with pdf thumbs:
    "convert -thumbnail 500x -background white -alpha remove file.pdf[0] thumb.png"
    ([0] == pdf page)
-* gtk gui, with pdf thumbs
+
+* add only opens writable db on doc.sync()
+* db version
 * rework db/doc interface
    * doc is just directory and xapian_doc
    * db does write/index on sync
@@ -41,11 +34,10 @@ cli:
 * export should produce full mirror of xapers document structure
 
 nci:
+* add update/add commands
+* how to test??
 * meta <other> for other fields (title, authors, year, etc)
 * custom keybindings
-* customize helper commands
-* how to test??
-* add update/add commands
 * customizable palette
 
 sources:
@@ -59,7 +51,6 @@ parser:
 
 ?
 * emacs UI (need json/sexp output)
-* rename file when importing and copying into docdir?
 * store bib data in different format (json instead of bibtex)?
 * clear old indexed terms when importing new file/bib?
 * vcs integration (git of root)?
@@ -75,3 +66,5 @@ BUGS
       key:foo -> XBIB|foo
       key:Foo -> XBIB|:Foo
 
+* can not add --file when source contains '/'
+  * "xapers add --source=arXiv:hep-th/9806203 --file"
