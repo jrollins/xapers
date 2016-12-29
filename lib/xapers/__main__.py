@@ -60,6 +60,7 @@ Commands:
     --output=[summary|bibtex|tags|sources|keys|files]
                                         output format (default is 'summary')
     --limit=N                           limit number of results returned
+  tags <search-terms>                 Short for \"search --output=tags\".
   bibtex <search-terms>               Short for \"search --output=bibtex\".
   view <search-terms>                 View search in curses UI.
   count <search-terms>                Count matches.
@@ -293,6 +294,14 @@ if __name__ == '__main__':
         set_stdout_codec()
         with cli.initdb() as db:
             cli.search(db, query, oformat=oformat, limit=limit)
+
+    ########################################
+    elif cmd in ['tags']:
+        argc = 2
+        query = make_query_string(sys.argv[argc:], require=False)
+        set_stdout_codec()
+        with cli.initdb() as db:
+            cli.search(db, query, oformat='tags')
 
     ########################################
     elif cmd in ['bibtex','bib','b']:
