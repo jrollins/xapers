@@ -51,6 +51,18 @@ class Database():
     """Represents a Xapers database"""
 
     # http://xapian.org/docs/omega/termprefixes.html
+    BOOLEAN_PREFIX = {
+        'id': 'Q',
+        'key': 'XBIB|',
+        'source': 'XSOURCE|',
+        'year': 'Y',
+        'y': 'Y',
+        }
+    # boolean prefixes for which there can be multiple per doc
+    BOOLEAN_PREFIX_MULTI = {
+        'tag': 'K',
+        }
+    # purely internal prefixes
     BOOLEAN_PREFIX_INTERNAL = {
         # FIXME: use this for doi?
         #'url': 'U',
@@ -58,15 +70,6 @@ class Database():
 
         # FIXME: use this for doc mime type
         'type': 'T',
-        }
-            
-    BOOLEAN_PREFIX_EXTERNAL = {
-        'id': 'Q',
-        'key': 'XBIB|',
-        'source': 'XSOURCE|',
-        'tag': 'K',
-        'year': 'Y',
-        'y': 'Y',
         }
 
     PROBABILISTIC_PREFIX = {
@@ -91,10 +94,12 @@ class Database():
 
     def _find_prefix(self, name):
         # FIXME: make this a dictionary union
+        if name in self.BOOLEAN_PREFIX:
+            return self.BOOLEAN_PREFIX[name]
+        if name in self.BOOLEAN_PREFIX_MULTI:
+            return self.BOOLEAN_PREFIX_MULTI[name]
         if name in self.BOOLEAN_PREFIX_INTERNAL:
             return self.BOOLEAN_PREFIX_INTERNAL[name]
-        if name in self.BOOLEAN_PREFIX_EXTERNAL:
-            return self.BOOLEAN_PREFIX_EXTERNAL[name]
         if name in self.PROBABILISTIC_PREFIX:
             return self.PROBABILISTIC_PREFIX[name]
 
@@ -152,8 +157,13 @@ class Database():
         self.query_parser.set_default_op(xapian.Query.OP_AND)
 
         # add boolean internal prefixes
-        for name, prefix in self.BOOLEAN_PREFIX_EXTERNAL.iteritems():
+        for name, prefix in self.BOOLEAN_PREFIX.iteritems():
             self.query_parser.add_boolean_prefix(name, prefix)
+        # for prefixes that can be applied multiply to the same
+        # document (like tags) set the filter grouping to use AND:
+        # https://xapian.org/docs/apidoc/html/classXapian_1_1QueryParser.html#a67d25f9297bb98c2101a03ff3d60cf30
+        for name, prefix in self.BOOLEAN_PREFIX_MULTI.iteritems():
+            self.query_parser.add_boolean_prefix(name, prefix, False)
 
         # add probabalistic prefixes
         for name, prefix in self.PROBABILISTIC_PREFIX.iteritems():
