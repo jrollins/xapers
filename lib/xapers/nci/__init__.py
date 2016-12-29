@@ -18,4 +18,10 @@ Copyright 2012-2017
 Jameson Rollins <jrollins@finestructure.net>
 """
 
+import os
+import logging
+if os.getenv('XAPERS_LOG_FILE'):
+    logging.basicConfig(filename=os.getenv('XAPERS_LOG_FILE'),
+                        level=logging.DEBUG)
+
 from .ui import UI
