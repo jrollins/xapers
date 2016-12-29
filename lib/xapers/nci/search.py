@@ -78,6 +78,7 @@ class DocItem(urwid.WidgetWrap):
         ('enter', "viewFile"),
         ('u', "viewURL"),
         ('b', "viewBibtex"),
+        ('t', "promptTag"),
         ('+', "addTags"),
         ('-', "removeTags"),
         ('meta i', "copyID"),
@@ -255,13 +256,20 @@ class DocItem(urwid.WidgetWrap):
         """remove tags from document (space separated)"""
         self.promptTag('-')
 
-    def promptTag(self, sign):
-        prompt = "apply tags (space separated): "
-        initial = sign
+    def promptTag(self, sign=None):
+        """apply tags to document (space separated, +add/-remove)"""
+        prompt = "tag document {} (+add -remove): ".format(self.docid)
+        initial = ''
         if sign is '+':
-            completions = self.ui.db.get_tags()
+            initial = '+'
         elif sign is '-':
+            initial = '-'
+        elif sign:
+            raise ValueError("sign must be '+' or '-'.")
+        if sign is '-':
             completions = self.doc.get_tags()
+        else:
+            completions = self.ui.db.get_tags()
         self.ui.prompt((self.applyTags, []),
                        prompt, initial=initial,
                        completions=completions,
