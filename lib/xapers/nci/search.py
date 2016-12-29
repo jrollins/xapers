@@ -425,7 +425,8 @@ class Search(urwid.Frame):
         entry, pos = self.listbox.get_focus()
         self.ui.db.reopen()
         self.__set_search()
-        self.listbox.set_focus(pos)
+        # FIXME: try to reset position to closet place in search,
+        # rather than resetting to the top
 
     def filterSearch(self, size, key):
         """filter current search with additional terms"""
@@ -456,12 +457,13 @@ class Search(urwid.Frame):
     def pageDown(self, size, key):
         """page down"""
         self.listbox.keypress(size, 'page down')
-        self.listbox.set_focus_valign('bottom')
+        # self.listbox.set_focus_valign('bottom')
+        # self.prevEntry(None, None)
 
     def pageUp(self, size, key):
         """page up"""
         self.listbox.keypress(size, 'page up')
-        self.listbox.set_focus_valign('top')
+        # self.listbox.set_focus_valign('top')
 
     def lastEntry(self, size, key):
         """last entry"""
