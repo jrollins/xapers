@@ -19,9 +19,7 @@ class Bibview(urwid.Frame):
             for doc in db.search(query, limit=20):
                 bibtex = doc.get_bibtex()
                 if bibtex:
-                    if string:
-                        string += '\n'
-                    string += bibtex + '\n'
+                    string += '\n' + bibtex + '\n'
 
         content = [urwid.Text(s) for s in string.split('\n')]
         body = urwid.ListBox(urwid.SimpleListWalker(content))
