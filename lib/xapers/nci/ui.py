@@ -295,6 +295,7 @@ class PromptEdit(urwid.Edit):
                     break
                 tpos -= 1
             prefix = text[tpos:pos]
+            # FIXME: this prefix stripping should not be done here
             prefix = prefix.lstrip('+-')
             # find the end of the word
             tpos += 1
