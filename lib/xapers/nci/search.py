@@ -349,11 +349,11 @@ class Search(urwid.Frame):
         ('<', "firstEntry"),
         ('>', "lastEntry"),
         ('a', "archive"),
-        ('=', "refresh"),
         ('l', "filterSearch"),
         ('meta S', "copySearch"),
         ('B', "viewBibtex"),
         ('T', "promptTag"),
+        ('=', "refresh"),
         ])
 
     def __init__(self, ui, query=None):
@@ -421,7 +421,7 @@ class Search(urwid.Frame):
     ##########
 
     def refresh(self, size, key):
-        """refresh current search results"""
+        """refresh current search"""
         entry, pos = self.listbox.get_focus()
         self.ui.db.reopen()
         self.__set_search()
@@ -429,7 +429,7 @@ class Search(urwid.Frame):
         # rather than resetting to the top
 
     def filterSearch(self, size, key):
-        """filter current search with additional terms"""
+        """modify current search or add additional terms"""
         prompt = 'filter search: {} '.format(self.query)
         self.ui.prompt((self.filterSearch_done, []),
                        prompt)
@@ -482,12 +482,12 @@ class Search(urwid.Frame):
         self.nextEntry(None, None)
 
     def copySearch(self, size, key):
-        """copy full search string to clipboard"""
+        """copy current search string to clipboard"""
         xclip(self.query)
         self.ui.set_status('yanked search: {}'.format(self.query))
 
     def viewBibtex(self, size, key):
-        """view search bibtex"""
+        """view bibtex for all documents in current search"""
         self.ui.newbuffer(['bibview', self.query])
 
     def promptTag(self, size, key):
