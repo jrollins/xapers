@@ -353,6 +353,7 @@ class Search(urwid.Frame):
         ('l', "filterSearch"),
         ('meta S', "copySearch"),
         ('B', "viewBibtex"),
+        ('T', "promptTag"),
         ])
 
     def __init__(self, ui, query=None):
@@ -486,3 +487,42 @@ class Search(urwid.Frame):
     def viewBibtex(self, size, key):
         """view search bibtex"""
         self.ui.newbuffer(['bibview', self.query])
+
+    def promptTag(self, size, key):
+        """tag all documents in current search"""
+        prompt = "tag all (+add -remove): "
+        initial = ''
+        completions = self.ui.db.get_tags()
+        self.ui.prompt((self.applyTags, []),
+                       prompt, initial=initial,
+                       completions=completions,
+                       history=self.ui.tag_history)
+
+    def applyTags(self, tag_string):
+        """apply tags to current search (space separated, +add/-remove)"""
+        if not tag_string:
+            self.ui.set_status("No tags set.")
+            return
+        tags_add = []
+        tags_sub = []
+        for tag in tag_string.split():
+            if tag[0] == '+':
+                tags_add.append(tag[1:])
+            elif tag[0] == '-':
+                tags_sub.append(tag[1:])
+            else:
+                tags_add.append(tag)
+        try:
+            with initdb(writable=True) as db:
+                count = db.count(self.query)
+                for doc in db.search(self.query):
+                    doc.add_tags(tags_add)
+                    doc.remove_tags(tags_sub)
+                    doc.sync()
+            msg = "applied tags to {} docs: {}".format(count, tag_string)
+            if not self.ui.tag_history or tag_string != self.ui.tag_history[-1]:
+                self.ui.tag_history.append(tag_string)
+        except DatabaseLockError as e:
+            msg = e.msg
+        self.refresh(None, None)
+        self.ui.set_status(msg)
