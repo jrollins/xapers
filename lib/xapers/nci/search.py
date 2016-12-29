@@ -351,6 +351,7 @@ class Search(urwid.Frame):
         ('a', "archive"),
         ('=', "refresh"),
         ('l', "filterSearch"),
+        ('meta S', "copySearch"),
         ('B', "viewBibtex"),
         ])
 
@@ -476,6 +477,11 @@ class Search(urwid.Frame):
             return
         entry.applyTags('-new')
         self.nextEntry(None, None)
+
+    def copySearch(self, size, key):
+        """copy full search string to clipboard"""
+        xclip(self.query)
+        self.ui.set_status('yanked search: {}'.format(self.query))
 
     def viewBibtex(self, size, key):
         """view search bibtex"""
