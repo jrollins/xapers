@@ -154,10 +154,6 @@ class UI():
         if not query:
             self.set_status()
             return
-        if self.search_history and query == self.search_history[-1]:
-            pass
-        else:
-            self.search_history.append(query)
         self.newbuffer(['search', query])
 
     def quit(self):

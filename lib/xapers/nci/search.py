@@ -358,6 +358,10 @@ class Search(urwid.Frame):
         self.ui = ui
         self.query = query
         super(Search, self).__init__(urwid.SolidFill())
+
+        if not self.ui.search_history or query != self.ui.search_history[-1]:
+            self.ui.search_history.append(query)
+
         self.__set_search()
 
     def __set_search(self):
