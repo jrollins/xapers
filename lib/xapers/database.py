@@ -347,15 +347,11 @@ class Database():
         docdirs = os.listdir(self.root)
         docdirs.sort()
         for ddir in docdirs:
-            if ddir == '.xapers':
-                continue
             docdir = os.path.join(self.root, ddir)
-            if not os.path.isdir(docdir):
-                # skip things that aren't directories
-                continue
 
-            if log:
-                print >>sys.stderr, docdir
+            # skip things that aren't directories
+            if not os.path.isdir(docdir):
+                continue
 
             # if we can't convert the directory name into an integer,
             # assume it's not relevant to us and continue
@@ -363,6 +359,9 @@ class Database():
                 docid = int(ddir)
             except ValueError:
                 continue
+
+            if log:
+                print >>sys.stderr, docdir
 
             docfiles = os.listdir(docdir)
             if not docfiles:
