@@ -21,6 +21,7 @@ Jameson Rollins <jrollins@finestructure.net>
 import os
 import sys
 import urwid
+import logging
 import collections
 
 from ..cli import initdb
@@ -281,24 +282,60 @@ class PromptEdit(urwid.Edit):
 
         # tab completion
         elif key == 'tab' and self.completions:
-            before = self.edit_text[:self.edit_pos]
+            # tab complete on individual words
+
+            # retrieve current text and position
+            text = self.edit_text
+            pos = self.edit_pos
+
+            # find the completion prefix
+            tpos = pos - 1
+            while True:
+                try:
+                    if text[tpos] == ' ':
+                        tpos += 1
+                        break
+                except IndexError:
+                    break
+                tpos -= 1
+            prefix = text[tpos:pos]
+            prefix = prefix.lstrip('+-')
+            # find the end of the word
+            tpos += 1
+            while True:
+                try:
+                    if text[tpos] == ' ':
+                        break
+                except IndexError:
+                    break
+                tpos += 1
+
+            # record/clear completion data
             if self.completion_data:
-                if before != self.completion_data['before']:
+                # clear the data if the prefix is new
+                if prefix != self.completion_data['prefix']:
                     self.completion_data.clear()
-            if self.completion_data:
-                self.completion_data['q'].rotate(-1)
+                # otherwise rotate the queue
+                else:
+                    self.completion_data['q'].rotate(-1)
             else:
-                self.completion_data['before'] = before
+                self.completion_data['prefix'] = prefix
                 # harvest completions
                 q = collections.deque()
                 for c in self.completions:
-                    if c.startswith(before):
+                    if c.startswith(prefix):
                         q.append(c)
                 self.completion_data['q'] = q
-            # insert completions
+
+            logging.debug(self.completion_data)
+
+            # insert completion at point
             if self.completion_data and self.completion_data['q']:
-                pos = self.edit_pos
-                self.set_edit_text(self.completion_data['q'][0])
+                c = self.completion_data['q'][0][len(prefix):]
+                ntext = text[:pos] + c + text[tpos:]
+                self.set_edit_text(ntext)
                 self.set_edit_pos(pos)
+
+        # record the last text
         self.last_text = self.edit_text
         return super(PromptEdit, self).keypress(size, key)
