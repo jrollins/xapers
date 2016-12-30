@@ -1,3 +1,10 @@
+xapers (0.7-1) unstable; urgency=medium
+
+  * New release (Closes: #779964, #819088, #802554, #812570, #847191)
+  * Fix section (Closes: #820392)
+
+ -- Jameson Graef Rollins <jrollins@finestructure.net>  Fri, 30 Dec 2016 14:31:41 -0800
+
 xapers (0.6-1) unstable; urgency=medium
 
   * New release (Closes: #726638)
