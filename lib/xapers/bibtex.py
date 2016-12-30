@@ -1,10 +1,30 @@
+"""
+This file is part of xapers.
+
+Xapers is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+Xapers is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with xapers.  If not, see <http://www.gnu.org/licenses/>.
+
+Copyright 2012-2017
+Jameson Rollins <jrollins@finestructure.net>
+"""
+
 import os
 import sys
 import io
 import json
 import pybtex
-from pybtex.core import Entry, Person
 from pybtex.bibtex.utils import split_name_list
+from pybtex.database import Entry, Person
 from pybtex.database.input import bibtex as inparser
 from pybtex.database.output import bibtex as outparser
 
@@ -26,10 +46,10 @@ class BibtexError(Exception):
 ##################################################
 
 class Bibtex():
-    """Represents a bibtex database."""
+    """Represents a bibtex database.
 
+    """
     # http://www.bibtex.org/Format/
-
     def __init__(self, bibtex):
 
         parser = inparser.Parser(encoding='utf-8')
@@ -69,8 +89,9 @@ class Bibtex():
 ##################################################
 
 class Bibentry():
-    """Represents an individual entry in a bibtex database"""
+    """Represents an individual entry in a bibtex database.
 
+    """
     def __init__(self, key, entry):
         self.key = key
         self.entry = entry
@@ -99,7 +120,10 @@ class Bibentry():
 
     def get_file(self):
         """Returns file path if file field exists.
-Expects either single path string or Mendeley/Jabref format."""
+
+        Expects either single path string or Mendeley/Jabref format.
+
+        """
         try:
             parsed = self.entry.fields['file'].split(':')
             if len(parsed) > 1:

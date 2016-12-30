@@ -1,10 +1,30 @@
+"""
+This file is part of xapers.
+
+Xapers is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+Xapers is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with xapers.  If not, see <http://www.gnu.org/licenses/>.
+
+Copyright 2012-2017
+Jameson Rollins <jrollins@finestructure.net>
+"""
+
 import os
 import re
 import pkgutil
 from urlparse import urlparse
 
-import sources
-from parser import parse_file
+from . import sources
+from .parser import parse_file
 
 ##################################################
 
@@ -139,7 +159,7 @@ class Sources(object):
         if extra:
             for path in extra.split(':'):
                 if path:
-                    sourcespath.insert(0, path)
+                    self.sourcespath.insert(0, path)
         else:
             self.sourcespath.insert(0, os.path.expanduser(os.path.join('~','.xapers','sources')))
 

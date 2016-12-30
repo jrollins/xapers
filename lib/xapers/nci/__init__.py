@@ -12,10 +12,16 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with notmuch.  If not, see <http://www.gnu.org/licenses/>.
+along with xapers.  If not, see <http://www.gnu.org/licenses/>.
 
-Copyright 2012
+Copyright 2012-2017
 Jameson Rollins <jrollins@finestructure.net>
 """
 
-from ui import UI
+import os
+import logging
+if os.getenv('XAPERS_LOG_FILE'):
+    logging.basicConfig(filename=os.getenv('XAPERS_LOG_FILE'),
+                        level=logging.DEBUG)
+
+from .ui import UI

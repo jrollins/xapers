@@ -12,9 +12,9 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with notmuch.  If not, see <http://www.gnu.org/licenses/>.
+along with xapers.  If not, see <http://www.gnu.org/licenses/>.
 
-Copyright 2012, 2013
+Copyright 2012-2017
 Jameson Rollins <jrollins@finestructure.net>
 """
 
@@ -22,9 +22,9 @@ import os
 import shutil
 import xapian
 
-from parser import parse_data
-from source import Sources
-from bibtex import Bibtex
+from .parser import parse_data
+from .source import Sources
+from .bibtex import Bibtex
 
 ##################################################
 
@@ -101,6 +101,8 @@ class Document():
     def get_docid(self):
         """Return document id of document."""
         return self.docid
+
+    ########################################
 
     def _make_docdir(self):
         if os.path.exists(self.docdir):
@@ -236,9 +238,11 @@ class Document():
     def add_file_data(self, name, data):
         """Add a file data to document.
 
-        'name' is the name of the file, 'data is the file data.
+        'name' is the name of the file, 'data' is the file data,
+        e.g. a string of text extracted from the document.
 
-        File will not copied in to docdir until sync().
+        File will not copied into docdir until sync().
+
         """
         # FIXME: set mime type term
 
@@ -439,13 +443,15 @@ class Document():
     ########################################
 
     def get_key(self):
+        """Get the document key."""
+        # FIXME: get from facet not bib
         self._load_bib()
         if not self.bibentry:
             return
         return self.bibentry.key
 
     def get_title(self):
-        """Get the title from document bibtex."""
+        """Get document full title from bibtex."""
         self._load_bib()
         if not self.bibentry:
             return
@@ -454,7 +460,8 @@ class Document():
             return fields['title']
 
     def get_year(self):
-        """Get the title from document bibtex."""
+        """Get document year from bibtex."""
+        # FIXME: get from facet not bib
         self._load_bib()
         if not self.bibentry:
             return

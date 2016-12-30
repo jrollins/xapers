@@ -12,9 +12,9 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with notmuch.  If not, see <http://www.gnu.org/licenses/>.
+along with xapers.  If not, see <http://www.gnu.org/licenses/>.
 
-Copyright 2012, 2013
+Copyright 2012-2017
 Jameson Rollins <jrollins@finestructure.net>
 """
 
@@ -24,11 +24,11 @@ import sets
 import shutil
 import readline
 
-import database
-from documents import Document
-from source import Sources, SourceError
-from parser import ParseError
-from bibtex import Bibtex, BibtexError
+from . import database
+from .documents import Document
+from .source import Sources, SourceError
+from .parser import ParseError
+from .bibtex import Bibtex, BibtexError
 
 ############################################################
 
@@ -380,11 +380,11 @@ def importbib(db, bibfile, tags=[], overwrite=False):
 def search(db, query_string, oformat='summary', limit=None):
     if query_string == '*' and oformat in ['tags','sources','keys']:
         if oformat == 'tags':
-            for tag in db.term_iter('tag'):
+            for tag in db.tag_iter():
                 print tag
         elif oformat == 'sources':
-            for source in db.get_sids():
-                print source
+            for sid in db.sid_iter():
+                print sid
         elif oformat == 'keys':
             for key in db.term_iter('key'):
                 print key

@@ -12,9 +12,9 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with notmuch.  If not, see <http://www.gnu.org/licenses/>.
+along with xapers.  If not, see <http://www.gnu.org/licenses/>.
 
-Copyright 2012, 2013
+Copyright 2012-2017
 Jameson Rollins <jrollins@finestructure.net>
 """
 
@@ -22,8 +22,8 @@ import os
 import sys
 import xapian
 
-from source import Sources
-from documents import Documents, Document
+from .source import Sources
+from .documents import Documents, Document
 
 # FIXME: add db schema documentation
 
@@ -51,6 +51,18 @@ class Database():
     """Represents a Xapers database"""
 
     # http://xapian.org/docs/omega/termprefixes.html
+    BOOLEAN_PREFIX = {
+        'id': 'Q',
+        'key': 'XBIB|',
+        'source': 'XSOURCE|',
+        'year': 'Y',
+        'y': 'Y',
+        }
+    # boolean prefixes for which there can be multiple per doc
+    BOOLEAN_PREFIX_MULTI = {
+        'tag': 'K',
+        }
+    # purely internal prefixes
     BOOLEAN_PREFIX_INTERNAL = {
         # FIXME: use this for doi?
         #'url': 'U',
@@ -58,15 +70,6 @@ class Database():
 
         # FIXME: use this for doc mime type
         'type': 'T',
-        }
-            
-    BOOLEAN_PREFIX_EXTERNAL = {
-        'id': 'Q',
-        'key': 'XBIB|',
-        'source': 'XSOURCE|',
-        'tag': 'K',
-        'year': 'Y',
-        'y': 'Y',
         }
 
     PROBABILISTIC_PREFIX = {
@@ -90,10 +93,13 @@ class Database():
     # FIXME: need database version
 
     def _find_prefix(self, name):
+        # FIXME: make this a dictionary union
+        if name in self.BOOLEAN_PREFIX:
+            return self.BOOLEAN_PREFIX[name]
+        if name in self.BOOLEAN_PREFIX_MULTI:
+            return self.BOOLEAN_PREFIX_MULTI[name]
         if name in self.BOOLEAN_PREFIX_INTERNAL:
             return self.BOOLEAN_PREFIX_INTERNAL[name]
-        if name in self.BOOLEAN_PREFIX_EXTERNAL:
-            return self.BOOLEAN_PREFIX_EXTERNAL[name]
         if name in self.PROBABILISTIC_PREFIX:
             return self.PROBABILISTIC_PREFIX[name]
 
@@ -151,8 +157,13 @@ class Database():
         self.query_parser.set_default_op(xapian.Query.OP_AND)
 
         # add boolean internal prefixes
-        for name, prefix in self.BOOLEAN_PREFIX_EXTERNAL.iteritems():
+        for name, prefix in self.BOOLEAN_PREFIX.iteritems():
             self.query_parser.add_boolean_prefix(name, prefix)
+        # for prefixes that can be applied multiply to the same
+        # document (like tags) set the filter grouping to use AND:
+        # https://xapian.org/docs/apidoc/html/classXapian_1_1QueryParser.html#a67d25f9297bb98c2101a03ff3d60cf30
+        for name, prefix in self.BOOLEAN_PREFIX_MULTI.iteritems():
+            self.query_parser.add_boolean_prefix(name, prefix, False)
 
         # add probabalistic prefixes
         for name, prefix in self.PROBABILISTIC_PREFIX.iteritems():
@@ -220,7 +231,7 @@ class Database():
                 yield term.term
 
     def term_iter(self, name=None):
-        """Iterator over all terms in the database.
+        """Generator of all terms in the database.
 
         If a prefix is provided, will iterate over only the prefixed
         terms, and the prefix will be removed from the returned terms.
@@ -233,14 +244,25 @@ class Database():
                 prefix = name
         return self._term_iter(prefix)
 
-    def get_sids(self):
-        """Get all sources in database."""
-        sids = []
-        # FIXME: do this more efficiently
+    def sid_iter(self):
+        """Generator of all source ids in database"""
         for source in self.term_iter('source'):
+            # FIXME: do this more efficiently
             for oid in self._term_iter(self._make_source_prefix(source)):
-                sids.append('%s:%s' % (source, oid))
-        return sids
+                yield '%s:%s' % (source, oid)
+
+    def get_sids(self):
+        """Get all source ids in database as a list"""
+        return [sid for sid in self.sid_iter()]
+
+    def tag_iter(self):
+        """Generator of all tags in database"""
+        for tag in self.term_iter('tag'):
+            yield tag
+
+    def get_tags(self):
+        """Get all tags in database as a list"""
+        return [tag for tag in self.tag_iter()]
 
     ########################################
 
@@ -325,15 +347,11 @@ class Database():
         docdirs = os.listdir(self.root)
         docdirs.sort()
         for ddir in docdirs:
-            if ddir == '.xapers':
-                continue
             docdir = os.path.join(self.root, ddir)
-            if not os.path.isdir(docdir):
-                # skip things that aren't directories
-                continue
 
-            if log:
-                print >>sys.stderr, docdir
+            # skip things that aren't directories
+            if not os.path.isdir(docdir):
+                continue
 
             # if we can't convert the directory name into an integer,
             # assume it's not relevant to us and continue
@@ -341,6 +359,9 @@ class Database():
                 docid = int(ddir)
             except ValueError:
                 continue
+
+            if log:
+                print >>sys.stderr, docdir
 
             docfiles = os.listdir(docdir)
             if not docfiles:
@@ -361,14 +382,14 @@ class Database():
                     if log:
                         print >>sys.stderr, '  adding bibtex'
                     doc.add_bibtex(dpath)
-                elif os.path.splitext(dpath)[1] == '.pdf':
-                    if log:
-                        print >>sys.stderr, '  adding file:', dfile
-                    doc.add_file(dpath)
                 elif dfile == 'tags':
                     if log:
                         print >>sys.stderr, '  adding tags'
                     with open(dpath, 'r') as f:
                         tags = f.read().strip().split('\n')
                     doc.add_tags(tags)
+                else: #elif os.path.splitext(dpath)[1] == '.pdf':
+                    if log:
+                        print >>sys.stderr, '  adding file:', dfile
+                    doc.add_file(dpath)
             doc.sync()

@@ -64,7 +64,6 @@ cat <<EOF >EXPECTED
     month = "Sep",
     pages = "2092"
 }
-
 EOF
 test_expect_equal_file "$XAPERS_ROOT"/0000000002/bibtex EXPECTED
 

@@ -1,42 +1,58 @@
 import urwid
+import logging
 
 ############################################################
 
-class Help(urwid.WidgetWrap):
+class Help(urwid.Frame):
 
     def __init__(self, ui, target=None):
         self.ui = ui
-        self.target = target
 
-        if self.target:
-            tname = self.target.__class__.__name__
-            self.ui.set_header([urwid.Text("help: " + tname)])
+        if target:
+            tname = target.__class__.__name__
+            htxt = [urwid.Text("Help: " + tname)]
         else:
-            self.ui.set_header([urwid.Text("help")])
+            htxt = [urwid.Text("Help")]
+        header = urwid.AttrMap(urwid.Columns(htxt), 'header')
 
         pile = []
 
-        if self.target and hasattr(self.target, 'keys'):
-            pile.append(urwid.Text('%s commands:' % (tname)))
-            pile.append(urwid.Text(''))
-            for key, cmd in self.target.keys.iteritems():
-                pile.append(self.row('target', cmd, key))
+        # format command help line
+        def fch(k, h):
+            return urwid.Columns([('fixed', 10, urwid.Text(k)),
+                                  urwid.Text(h),
+                                  ])
+
+        if target:
+            for k,h in target.help():
+                if not k:
+                    pile.append(urwid.Text(''))
+                    pile.append(urwid.Text(''))
+                    pile.append(urwid.Text(h))
+                    pile.append(urwid.Text(''))
+                else:
+                    pile.append(fch(k,h))
             pile.append(urwid.Text(''))
             pile.append(urwid.Text(''))
 
         pile.append(urwid.Text('Global commands:'))
         pile.append(urwid.Text(''))
-        for key, cmd in self.ui.keys.iteritems():
-            pile.append(self.row('ui', cmd, key))
+        for k, cmd in self.ui.keys.iteritems():
+            f = getattr(ui, cmd)
+            h = str(getattr(f, '__doc__'))
+            pile.append(fch(k,h))
 
-        w = urwid.Filler(urwid.Pile(pile))
-        self.__super.__init__(w)
+        body = urwid.ListBox(urwid.SimpleListWalker(pile))
 
-    def row(self, c, cmd, key):
-        hstring = eval('str(self.%s.%s.__doc__)' % (c, cmd))
-        return urwid.Columns([('fixed', 10, urwid.Text(key)),
-                              urwid.Text(hstring),
-                              ])
+        super(Help, self).__init__(body, header=header)
 
     def keypress(self, size, key):
-        self.ui.keypress(key)
+        # ignore help in help
+        if key == '?':
+            return
+        if key == ' ':
+            return self.get_body().keypress(size, 'page down')
+        return super(Help, self).keypress(size, key)
+
+    def help(self):
+        return []
