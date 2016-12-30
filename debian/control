@@ -3,29 +3,31 @@ Section: text
 Priority: optional
 Maintainer: Jameson Graef Rollins <jrollins@finestructure.net>
 Build-Depends:
+ debhelper (>= 9),
+ dh-python,
  pkg-config,
- python-all-dev (>= 2.6.6-3~),
+ poppler-utils,
+ pybtex,
  python-setuptools,
- debhelper (>= 9)
-Standards-Version: 3.9.6
+ python-xapian,
+Standards-Version: 3.9.8
 Homepage: http://finestructure.net/xapers
 Vcs-Git: git://finestructure.net/xapers
 
 Package: xapers
-Architecture: any
+Architecture: all
 Depends:
- ${shlibs:Depends},
- ${misc:Depends},
- ${python:Depends},
+ poppler-utils,
+ pybtex,
  python-pkg-resources,
  python-xapian,
- poppler-utils,
- pybtex
+ ${misc:Depends},
+ ${python:Depends},
 Recommends:
  python-pycurl,
  python-urwid,
+ xclip,
  xdg-utils,
- xclip
 Description: Personal journal article management and indexing system
  Xapers is a personal document indexing system, geared towards
  academic journal articles.  Think of it as your own personal document
