@@ -1,5 +1,5 @@
 Source: xapers
-Section: python
+Section: text
 Priority: optional
 Maintainer: Jameson Graef Rollins <jrollins@finestructure.net>
 Build-Depends:
