@@ -1,14 +1,10 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Xapers
 Upstream-Contact: Jameson Rollins <jrollins@finestructure.net>
-Source: https://finestructure.net/xapers/
+Source: https://finestructure.net/xapers
 
 Files: *
-Copyright: 2012-2015 Jameson Rollins <jrollins@finestructure.net>
-License: GPL-3+
-
-Files: debian/*
-Copyright: 2012-2015 Jameson Rollins <jrollins@finestructure.net>
+Copyright: 2012-2017 Jameson Rollins <jrollins@finestructure.net>
 License: GPL-3+
 
 License: GPL-3+
