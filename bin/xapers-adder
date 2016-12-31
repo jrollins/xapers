@@ -34,7 +34,7 @@ done
 
 if [[ "$term" == 'true' ]] ; then
     exec x-terminal-emulator \
-	-title "xapers-adder" \
+	-T "xapers-adder" \
 	-e bash -c "$cmd"
 else
     eval "$cmd"
