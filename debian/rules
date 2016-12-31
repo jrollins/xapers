@@ -8,3 +8,8 @@ override_dh_auto_test:
 
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS
+
+override_dh_clean:
+	rm -rf test/test-results/
+	rm -rf test/tmp.all/
+	dh_clean
