@@ -8,6 +8,7 @@ Build-Depends:
  pkg-config,
  poppler-utils,
  pybtex,
+ python,
  python-setuptools,
  python-xapian,
 Standards-Version: 3.9.8
