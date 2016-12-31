@@ -1,18 +1,19 @@
+* sort results by date
+* unique bibtex keys (handle conflicting) (use id?)
+* nci: translate tex in fields
 * translate journal abbreviations in bibtex
-* rename files when being added?
-* unique bibtex keys (handle conflicting)
-* "notes" for documents (editable txt file)
 * need *something* for docs without sources
    * store at least URL
+* "notes" for documents (editable txt file)
 
+* add only opens writable db on doc.sync()
+* db version
+* rename files when being added?
 * separate add and update commands
 * set/get title, author, tags as data or values (is this faster?)
 * gtk gui, with pdf thumbs:
    "convert -thumbnail 500x -background white -alpha remove file.pdf[0] thumb.png"
    ([0] == pdf page)
-
-* add only opens writable db on doc.sync()
-* db version
 * rework db/doc interface
    * doc is just directory and xapian_doc
    * db does write/index on sync
@@ -30,10 +31,9 @@ doc:
 cli:
 * utilize meta-data pulled from parser
 * update should re-pull from existing source if available
-* export should produce full mirror of xapers document structure
+* export should produce full mirror of xapers document structure, with index
 
 nci:
-* translate tex in fields
 * add update/add commands
 * how to test??
 * meta <other> for other fields (title, authors, year, etc)
