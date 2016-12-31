@@ -12,8 +12,8 @@ Build-Depends:
  python-setuptools,
  python-xapian,
 Standards-Version: 3.9.8
-Homepage: http://finestructure.net/xapers
-Vcs-Git: git://finestructure.net/xapers
+Homepage: https://finestructure.net/xapers
+Vcs-Git: https://finestructure.net/git/xapers
 
 Package: xapers
 Architecture: all
