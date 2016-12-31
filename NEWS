@@ -1,3 +1,16 @@
+Xapers 0.7 (2016-12-31)
+=======================
+
+* nci: various improvements:
+  * better buffer handling/redraw
+  * more commands
+  * improved prompts, with navigation, history, tab completion, etc.
+
+* lib: fix query matching for tag terms: default AND instead of OR
+
+* bibtex: updates for pybibtex 0.20
+
+
 Xapers 0.6 (2015-01-10)
 =======================
 

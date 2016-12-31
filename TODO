@@ -1,6 +1,5 @@
-* translate bibtex journal abbreviations
+* translate journal abbreviations in bibtex
 * rename files when being added?
-* better resolve conflicts
 * unique bibtex keys (handle conflicting)
 * "notes" for documents (editable txt file)
 * need *something* for docs without sources
@@ -34,6 +33,7 @@ cli:
 * export should produce full mirror of xapers document structure
 
 nci:
+* translate tex in fields
 * add update/add commands
 * how to test??
 * meta <other> for other fields (title, authors, year, etc)
