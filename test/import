@@ -19,8 +19,8 @@ xapers add --tags=foo --source="$DOC_DIR"/2.bib
 xapers add --tags=bar --source="$DOC_DIR"/3.bib
 xapers search '*' >OUTPUT
 cat <<EOF >EXPECTED
-id:2 [] {fake:1234} (bar) "When the liver meats the pavement"
 id:1 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (foo) "Multicolor cavity sadness"
+id:2 [] {fake:1234} (bar) "When the liver meats the pavement"
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
@@ -29,10 +29,10 @@ xapers import --tags=new all.bib
 xapers search '*' >OUTPUT
 cat <<EOF >EXPECTED
 id:5 [arxiv:1235] {arxiv:1235} (new) "Creation of the γ-verses"
+id:1 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (foo new) "Multicolor cavity sadness"
+id:2 [] {fake:1234} (bar new) "When the liver meats the pavement"
 id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
 id:3 [doi:10.9999/FOO.3] {30929} (new) "Circle are Squares"
-id:2 [] {fake:1234} (bar new) "When the liver meats the pavement"
-id:1 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (foo new) "Multicolor cavity sadness"
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
@@ -63,10 +63,10 @@ xapers import --tags=new all.bib
 xapers search '*' >OUTPUT
 cat <<EOF >EXPECTED
 id:5 [arxiv:1235] {arxiv:1235} (new) "Creation of the γ-verses"
+id:1 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (foo new) "Multicolor cavity sadness"
+id:2 [] {fake:1234} (bar new) "When the liver meats the pavement"
 id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
 id:3 [doi:10.9999/FOO.3] {30929} (new) "Circle are Squares"
-id:2 [] {fake:1234} (bar new) "When the liver meats the pavement"
-id:1 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (foo new) "Multicolor cavity sadness"
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 

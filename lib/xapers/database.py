@@ -266,9 +266,17 @@ class Database():
 
     ########################################
 
-    # search for documents based on query string
-    def _search(self, query_string, limit=None):
+    # search for documents based on query string and return mset
+    def _search(self, query_string, sort='relevance', limit=None):
         enquire = xapian.Enquire(self.xapian)
+
+        # FIXME: add option for ascending/descending
+        if sort == 'relevance':
+            enquire.set_sort_by_relevance_then_value(self.NUMBER_VALUE_FACET['year'], True)
+        elif sort == 'year':
+            enquire.set_sort_by_value_then_relevance(self.NUMBER_VALUE_FACET['year'], True)
+        else:
+            raise ValueError("sort parameter accepts only 'relevance' or 'year'")
 
         if query_string == "*":
             query = xapian.Query.MatchAll
@@ -294,9 +302,15 @@ class Database():
 
         return mset
 
-    def search(self, query_string, limit=0):
-        """Search for documents in the database."""
-        mset = self._search(query_string, limit)
+    def search(self, query_string, sort='relevance', limit=None):
+        """Search for documents in the database.
+
+        The `sort` keyword argument can be 'relevance' (default) or
+        'year'.  `limit` can be used to limit the number of returned
+        documents (default is None).
+
+        """
+        mset = self._search(query_string, sort=sort, limit=limit)
         return Documents(self, mset)
 
     def count(self, query_string):
