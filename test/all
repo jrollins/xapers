@@ -194,6 +194,14 @@ id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
+test_begin_subtest 'search sort year'
+xapers search --output=summary --sort=year lorem >OUTPUT
+cat <<EOF >EXPECTED
+id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+id:5 [] {} (new) ""
+EOF
+test_expect_equal_file OUTPUT EXPECTED
+
 test_begin_subtest 'search prefix title:'
 xapers search title:cavity >OUTPUT
 cat <<EOF >EXPECTED

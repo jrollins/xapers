@@ -59,6 +59,7 @@ Commands:
   search [options] <search-terms>     Search for documents.
     --output=[summary|bibtex|tags|sources|keys|files]
                                         output format (default is 'summary')
+    --sort=[relevance|year]             sort output (default is 'relevance')
     --limit=N                           limit number of results returned
   tags <search-terms>                 Short for \"search --output=tags\".
   bibtex <search-terms>               Short for \"search --output=bibtex\".
@@ -272,6 +273,7 @@ if __name__ == '__main__':
     ########################################
     elif cmd in ['search','s']:
         oformat = 'summary'
+        sort = 'relevance'
         limit = 0
 
         argc = 2
@@ -280,6 +282,8 @@ if __name__ == '__main__':
                 break
             if '--output=' in sys.argv[argc]:
                 oformat = sys.argv[argc].split('=')[1]
+            elif '--sort=' in sys.argv[argc]:
+                sort = sys.argv[argc].split('=')[1]
             elif '--limit=' in sys.argv[argc]:
                 limit = int(sys.argv[argc].split('=')[1])
             else:
@@ -290,10 +294,14 @@ if __name__ == '__main__':
             print >>sys.stderr, "Unknown output format."
             sys.exit(1)
 
+        if sort not in ['relevance','year']:
+            print >>sys.stderr, "Unknown sort parameter."
+            sys.exit(1)
+
         query = make_query_string(sys.argv[argc:])
         set_stdout_codec()
         with cli.initdb() as db:
-            cli.search(db, query, oformat=oformat, limit=limit)
+            cli.search(db, query, oformat=oformat, sort=sort, limit=limit)
 
     ########################################
     elif cmd in ['tags']:

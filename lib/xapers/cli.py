@@ -377,7 +377,7 @@ def importbib(db, bibfile, tags=[], overwrite=False):
 
 ############################################
 
-def search(db, query_string, oformat='summary', limit=None):
+def search(db, query_string, oformat='summary', sort='relevance', limit=None):
     if query_string == '*' and oformat in ['tags','sources','keys']:
         if oformat == 'tags':
             for tag in db.tag_iter():
@@ -394,7 +394,7 @@ def search(db, query_string, oformat='summary', limit=None):
     osources = set([])
     okeys = set([])
 
-    for doc in db.search(query_string, limit=limit):
+    for doc in db.search(query_string, sort=sort, limit=limit):
         if oformat in ['summary']:
             print_doc_summary(doc)
             continue
