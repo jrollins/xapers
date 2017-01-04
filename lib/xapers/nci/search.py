@@ -349,12 +349,15 @@ class Search(urwid.Frame):
         ('<', "firstEntry"),
         ('>', "lastEntry"),
         ('a', "archive"),
+        ('o', "toggleSort"),
         ('l', "filterSearch"),
         ('meta S', "copySearch"),
         ('B', "viewBibtex"),
         ('T', "promptTag"),
         ('=', "refresh"),
         ])
+
+    __sort = collections.deque(['relevance', 'year'])
 
     def __init__(self, ui, query=None):
         self.ui = ui
@@ -366,13 +369,17 @@ class Search(urwid.Frame):
 
         self.__set_search()
 
+    @property
+    def sort_order(self):
+        return self.__sort[0]
+
     def __set_search(self):
         count = self.ui.db.count(self.query)
         if count == 0:
             self.ui.set_status('No documents found.')
             docs = []
         else:
-            docs = [doc for doc in self.ui.db.search(self.query)]
+            docs = [doc for doc in self.ui.db.search(self.query, sort=self.sort_order)]
         if count == 1:
             cstring = "%d result" % (count)
         else:
@@ -380,6 +387,7 @@ class Search(urwid.Frame):
 
         htxt = [('pack', urwid.Text("Search: ")),
                 ('pack', urwid.AttrMap(urwid.Text("%s" % (self.query), align='left'), 'header_args')),
+                ('pack', urwid.Text(" [{}]".format(self.sort_order))),
                 urwid.Text(cstring, align='right'),
                 ]
         header = urwid.AttrMap(urwid.Columns(htxt), 'header')
@@ -422,11 +430,15 @@ class Search(urwid.Frame):
 
     def refresh(self, size, key):
         """refresh current search"""
-        entry, pos = self.listbox.get_focus()
         self.ui.db.reopen()
         self.__set_search()
         # FIXME: try to reset position to closet place in search,
         # rather than resetting to the top
+
+    def toggleSort(self, size, key):
+        """toggle search sort order between year/relevance"""
+        self.__sort.rotate()
+        self.__set_search()
 
     def filterSearch(self, size, key):
         """modify current search or add additional terms"""
