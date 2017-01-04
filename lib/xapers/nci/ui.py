@@ -47,7 +47,7 @@ class UI():
         ('?', "help"),
         ])
 
-    default_status_string = "s: search, q: close buffer, Q: quit, ?: help and additional commands"
+    default_status_string = "s: new search, q: close buffer, Q: quit, ?: help"
     buffers = []
     search_history = []
     tag_history = []
@@ -78,12 +78,11 @@ class UI():
 
     ##########
 
-
     def set_status(self, text=None):
         if text:
             T = [urwid.Text(text)]
         else:
-            T = [urwid.Text('Xapers [{}]'.format(len(self.buffers))),
+            T = [('pack', urwid.Text('Xapers [{}]'.format(len(self.buffers)))),
                  urwid.Text(self.default_status_string, align='right'),
                  ]
         self.view.set_footer(urwid.AttrMap(urwid.Columns(T), 'footer'))
