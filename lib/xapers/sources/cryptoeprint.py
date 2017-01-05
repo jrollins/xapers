@@ -41,13 +41,25 @@ class IACRParser(HTMLParser):
 def fetch_bibtex(id):
     url = bibtex_url % id
 
+    # this would be tons easier in python3
     f = urllib.urlopen(url)
     html = f.read()
+    ct = filter(lambda x: x.startswith('charset='), map(str.strip, f.headers.typeheader.split(';')))
+    if ct:
+        charset = ct[-1].split('=')[1]
+    else:
+        charset = 'iso8859-1'
     f.close()
 
     p = IACRParser()
     p.feed(html)
-    return unicode(p.data)
+    try:
+        ret = unicode(p.data, charset)
+    except LookupError, e:
+        # if they send some super mangled charset we can try again
+        # with the default:
+        ret = unicode(p.data, 'iso8859-1')
+    return ret
 
 
 def fetch_file(id):

@@ -1,3 +1,12 @@
+Xapers 0.7.1 (2017-01-04)
+=======================
+
+* Add ability to search sort results by year.  Works in both cli
+  (--sort option) and curses interface ('o' to toggle sort order)
+
+* fix to charset decoding in cryptoeprint source (thanks dkg)
+
+
 Xapers 0.7 (2016-12-31)
 =======================
 

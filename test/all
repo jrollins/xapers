@@ -158,30 +158,30 @@ test_expect_code 1 'fail search without query' \
 test_begin_subtest 'search all'
 xapers search '*' >OUTPUT
 cat <<EOF >EXPECTED
-id:5 [] {} (new) ""
-id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
-id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
 id:2 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (bar new) "Multicolor cavity sadness"
 id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
+id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
+id:5 [] {} (new) ""
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
 test_begin_subtest 'search all pipe'
 xapers search '*' | cat >OUTPUT
 cat <<EOF >EXPECTED
-id:5 [] {} (new) ""
-id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
-id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
 id:2 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (bar new) "Multicolor cavity sadness"
 id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
+id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
+id:5 [] {} (new) ""
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
 test_begin_subtest 'search all --limit'
 xapers search --limit=3 '*' >OUTPUT
 cat <<EOF >EXPECTED
-id:5 [] {} (new) ""
-id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
+id:2 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (bar new) "Multicolor cavity sadness"
+id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
 id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
 EOF
 test_expect_equal_file OUTPUT EXPECTED
@@ -191,6 +191,14 @@ xapers search --output=summary lorem >OUTPUT
 cat <<EOF >EXPECTED
 id:5 [] {} (new) ""
 id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+EOF
+test_expect_equal_file OUTPUT EXPECTED
+
+test_begin_subtest 'search sort year'
+xapers search --output=summary --sort=year lorem >OUTPUT
+cat <<EOF >EXPECTED
+id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+id:5 [] {} (new) ""
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
@@ -224,25 +232,25 @@ test_expect_equal_file OUTPUT EXPECTED
 test_begin_subtest 'search year range'
 xapers search y:1980..2011 >OUTPUT
 cat <<EOF >EXPECTED
-id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
 id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
 test_begin_subtest 'search year open start'
 xapers search year:..1990 >OUTPUT
 cat <<EOF >EXPECTED
-id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
 id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
+id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
 test_begin_subtest 'search year open end'
 xapers search year:1900.. >OUTPUT
 cat <<EOF >EXPECTED
-id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
 id:2 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (bar new) "Multicolor cavity sadness"
 id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
@@ -278,10 +286,10 @@ test_expect_equal_file OUTPUT EXPECTED
 test_begin_subtest 'search prefix tag:'
 xapers search tag:new >OUTPUT
 cat <<EOF >EXPECTED
-id:5 [] {} (new) ""
-id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
 id:2 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (bar new) "Multicolor cavity sadness"
 id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
+id:5 [] {} (new) ""
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
@@ -339,10 +347,10 @@ test_expect_equal_file OUTPUT EXPECTED
 test_begin_subtest 'search --output=files'
 xapers search --output=files '*' | sed "s|$XAPERS_ROOT|XAPERS_ROOT|" >OUTPUT
 cat <<EOF >EXPECTED
-XAPERS_ROOT/0000000005/5.pdf
-XAPERS_ROOT/0000000003/3.pdf
 XAPERS_ROOT/0000000002/2 file.pdf
 XAPERS_ROOT/0000000001/1.pdf
+XAPERS_ROOT/0000000003/3.pdf
+XAPERS_ROOT/0000000005/5.pdf
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
@@ -363,15 +371,6 @@ test_expect_equal_file OUTPUT EXPECTED
 test_begin_subtest 'bibtex multiple'
 xapers bibtex tag:new | sed "s|$XAPERS_ROOT|XAPERS_ROOT|" >OUTPUT
 cat <<EOF >EXPECTED
-@article{30929234,
-    author = "Me and You and We Know, Everyone",
-    title = "The Circle and the Square: Forbidden Love",
-    url = "http://dx.doi.org/10.9999/FOO.2",
-    DOI = "10.9999/FOO.2",
-    journal = "Shaply Letters",
-    year = "1869"
-}
-
 @article{Good_Bad_Up_Down_Left_Right_et_al._2012,
     author = "Good, Bob and Bad, Sam and Up, Steve and Down, Joseph and Left, Aidan and Right, Kate and et al.",
     title = "Multicolor cavity sadness",
@@ -393,6 +392,15 @@ cat <<EOF >EXPECTED
     year = "2011",
     eprint = "1235",
     file = ":XAPERS_ROOT/0000000001/1.pdf:pdf"
+}
+
+@article{30929234,
+    author = "Me and You and We Know, Everyone",
+    title = "The Circle and the Square: Forbidden Love",
+    url = "http://dx.doi.org/10.9999/FOO.2",
+    DOI = "10.9999/FOO.2",
+    journal = "Shaply Letters",
+    year = "1869"
 }
 
 EOF
@@ -478,11 +486,11 @@ test_expect_success 'restore to existing db' \
 test_begin_subtest 'database intact after restore'
 xapers search '*' >OUTPUT
 cat <<EOF >EXPECTED
-id:5 [] {} (new) ""
-id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
-id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
 id:2 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (bar new) "Multicolor cavity sadness"
 id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
+id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
+id:5 [] {} (new) ""
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
@@ -498,11 +506,11 @@ test_expect_success 'restore purged db' \
 test_begin_subtest 'database intact after restore'
 xapers search '*' >OUTPUT
 cat <<EOF >EXPECTED
-id:5 [] {} (new) ""
-id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
-id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
 id:2 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (bar new) "Multicolor cavity sadness"
 id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
+id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
+id:5 [] {} (new) ""
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
@@ -510,10 +518,10 @@ test_begin_subtest 'delete single document noprompt'
 echo 'yes' | xapers delete id:2
 xapers search '*' >OUTPUT
 cat <<EOF >EXPECTED
-id:5 [] {} (new) ""
-id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
-id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
 id:1 [arxiv:1235] {arxiv:1235} (foo new) "Creation of the γ-verses"
+id:3 [] {fake:1234} (qux) "When the liver meats the pavement"
+id:4 [doi:10.9999/FOO.2] {30929234} (new) "The Circle and the Square: Forbidden Love"
+id:5 [] {} (new) ""
 EOF
 test_expect_equal_file OUTPUT EXPECTED
 
