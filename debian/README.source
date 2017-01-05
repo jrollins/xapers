@@ -1,0 +1,14 @@
+The debian branch should be able to be synced directly with the
+upstream master branch.  Once ready you can run the following to just
+build the source package:
+
+gbp buildpackage -S --git-tag
+
+or the following to build the deb but prep the .changes for a
+source-only upload:
+
+gbp buildpackage --changes-option=-S --git-tag
+
+Then upload with `dput`.
+
+ -- Jameson Graef Rollins <jrollins@finestructure.net>, Wed,  4 Jan 2017 22:30:52 -0800
