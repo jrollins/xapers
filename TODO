@@ -1,4 +1,3 @@
-* sort results by date
 * unique bibtex keys (handle conflicting) (use id?)
 * nci: translate tex in fields
 * translate journal abbreviations in bibtex
