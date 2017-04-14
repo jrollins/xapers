@@ -111,7 +111,8 @@ class Bibentry():
         # clean the strings first
         fields = {}
         for field in bibfields:
-            fields[field] = str(clean_bib_string(bibfields[field]))
+            # Treat all keys as lowercase
+            fields[field.lower()] = str(clean_bib_string(bibfields[field]))
         return fields
 
     def set_file(self, path):
