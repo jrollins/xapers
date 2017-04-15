@@ -448,6 +448,13 @@ class Document():
         if 'title' in fields:
             return fields['title']
 
+    def get_authors(self):
+        """Get document author(s) from bibtex."""
+        self._load_bib()
+        if not self.bibentry:
+            return
+        return self.bibentry.get_authors()
+
     def get_year(self):
         """Get document year from bibtex."""
         # FIXME: get from facet not bib
