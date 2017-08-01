@@ -170,8 +170,7 @@ class UI():
 
 ############################################################
 
-class PromptEdit(urwid.Edit):
-    __metaclass__ = urwid.signals.MetaSignals
+class PromptEdit(urwid.Edit, metaclass=urwid.signals.MetaSignals):
     signals = ['done']
 
     def __init__(self, prompt, initial=None, completions=None, history=None):

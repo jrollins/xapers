@@ -58,7 +58,7 @@ class Documents():
     def __len__(self):
         return self.max
 
-    def next(self):
+    def __next__(self):
         self.index = self.index + 1
         if self.index == self.max:
             raise StopIteration
@@ -112,7 +112,7 @@ class Document():
             os.makedirs(self.docdir)
 
     def _write_files(self):
-        for name, data in self._infiles.iteritems():
+        for name, data in self._infiles.items():
             path = os.path.join(self.docdir, name)
             with open(path, 'w') as f:
                 f.write(data)

@@ -37,7 +37,7 @@ class Help(urwid.Frame):
 
         pile.append(urwid.Text('Global commands:'))
         pile.append(urwid.Text(''))
-        for k, cmd in self.ui.keys.iteritems():
+        for k, cmd in self.ui.keys.items():
             f = getattr(ui, cmd)
             h = str(getattr(f, '__doc__'))
             pile.append(fch(k,h))

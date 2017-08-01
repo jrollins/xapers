@@ -49,7 +49,7 @@ def parse_data(data):
 
     try:
         text = extract(data)
-    except Exception, e:
+    except Exception as e:
         raise ParseError("Could not parse file: %s" % e)
 
     return text
@@ -73,7 +73,7 @@ def parse_file(path):
 
     try:
         text = pmod(path).extract()
-    except Exception, e:
+    except Exception as e:
         raise ParseError("Could not parse file: %s" % e)
 
     return text

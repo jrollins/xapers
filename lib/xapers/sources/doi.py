@@ -1,4 +1,4 @@
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 description = "Digital Object Identifier"
 
@@ -24,10 +24,10 @@ scan_regex = '(?:doi|DOI)[\s\.\:]{0,2}' + id_regex
 def fetch_bibtex(id):
     # http://www.crosscite.org/cn/
     url = url_format % id
-    req = urllib2.Request(url)
+    req = urllib.request.Request(url)
     req.add_header('Accept', 'application/x-bibtex')
     req.add_header('Accept-Charset', 'utf-8')
-    f = urllib2.urlopen(req)
+    f = urllib.request.urlopen(req)
     # DECODE the returned byte string to get a unicode string
     bibtex = f.read().decode('utf-8')
     f.close

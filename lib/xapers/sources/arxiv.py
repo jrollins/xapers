@@ -1,5 +1,5 @@
-import urllib
-from HTMLParser import HTMLParser
+import urllib.request, urllib.parse, urllib.error
+from html.parser import HTMLParser
 from xapers.bibtex import data2bib
 
 description = "Open access e-print service"
@@ -63,7 +63,7 @@ class MyHTMLParser(HTMLParser):
 def fetch_bibtex(id):
     url = url_format % id
 
-    f = urllib.urlopen(url)
+    f = urllib.request.urlopen(url)
     html = f.read()
     f.close()
 
@@ -83,7 +83,7 @@ def fetch_bibtex(id):
 
 def fetch_file(id):
     url = 'http://arxiv.org/pdf/%s' % id
-    f = urllib.urlopen(url)
+    f = urllib.request.urlopen(url)
     data = f.read()
     f.close()
     name = '%s.pdf' % id

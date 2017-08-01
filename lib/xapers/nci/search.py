@@ -102,7 +102,7 @@ class DocItem(urwid.WidgetWrap):
 
         bibdata = doc.get_bibdata()
         if bibdata:
-            for field, value in bibdata.iteritems():
+            for field, value in bibdata.items():
                 if 'title' == field:
                     field_data[field] = value
                 elif 'authors' == field:
@@ -420,7 +420,7 @@ class Search(urwid.Frame):
     def help(self):
         lines = []
         def get_keys(o):
-            for k, cmd in o.keys.items():
+            for k, cmd in list(o.keys.items()):
                 yield (k, str(getattr(getattr(o, cmd), '__doc__')))
         yield (None, "Document commands:")
         for o in get_keys(DocItem):

@@ -1,2 +1,2 @@
 #!/bin/sh
-exec python -m xapers "$@"
+exec python3 -m xapers "$@"
