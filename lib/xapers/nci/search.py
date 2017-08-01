@@ -24,7 +24,7 @@ import subprocess
 import collections
 
 from ..cli import initdb
-from ..database import DatabaseLockError
+from ..database import DatabaseLockError, DatabaseModifiedError
 
 PALETTE = [
     ('head', 'dark blue, bold', ''),
@@ -374,7 +374,10 @@ class Search(urwid.Frame):
         return self.__sort[0]
 
     def __set_search(self):
-        count = self.ui.db.count(self.query)
+        try:
+            count = self.ui.db.count(self.query)
+        except DatabaseModifiedError:
+            self.ui.db.reopen()
         if count == 0:
             self.ui.set_status('No documents found.')
             docs = []
