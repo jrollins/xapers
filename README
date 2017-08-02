@@ -35,6 +35,8 @@ Xapers is heavily inspired by the notmuch mail indexing system [2].
 [1] http://www.bibtex.org/
 [2] http://notmuchmail.org/
 
+![xapers ncurses UI]](screenshot.png "xapers ncurses UI")
+
 
 Contact
 =======
