@@ -35,11 +35,11 @@ setup(
         'Operating System :: POSIX',
         'Programming Language :: Python :: 3 :: Only'],
 
-    install_requires = [
-        'xapian',
-        'pybtex',
-        'urwid',
-        ],
+    # install_requires = [
+    #     'xapian',
+    #     'pybtex',
+    #     'urwid',
+    #     ],
 
     package_dir = {'': 'lib'},
     packages = [
