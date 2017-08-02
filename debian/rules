@@ -7,7 +7,7 @@ override_dh_auto_test:
 	make test
 
 override_dh_installchangelogs:
-	dh_installchangelogs NEWS
+	dh_installchangelogs NEWS.md
 
 override_dh_clean:
 	rm -rf test/test-results/
