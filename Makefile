@@ -20,7 +20,7 @@ ifdef V
 update-version: VERSION:=$(V)
 release: VERSION:=$(V)
 release: update-version
-	head -1 NEWS | grep "^Xapers $(VERSION) "
+	head -1 NEWS.md | grep "^Xapers $(VERSION) "
 	make test
 	git commit -m "Update version for release $(VERSION)." $(PV_FILE) || true
 	git tag --sign -m "Xapers $(VERSION) release." $(VERSION)
