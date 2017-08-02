@@ -20,7 +20,6 @@ Jameson Rollins <jrollins@finestructure.net>
 
 import os
 import sys
-import codecs
 import signal
 
 from . import cli
@@ -139,11 +138,6 @@ def import_nci():
         print("Please install to be able to use the curses UI.", file=sys.stderr)
         sys.exit(1)
     return nci
-
-def set_stdout_codec():
-    # set the stdout codec to properly handle utf8 characters
-    SYS_STDOUT = sys.stdout
-    sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
 ########################################################################
 
@@ -299,7 +293,6 @@ if __name__ == '__main__':
             sys.exit(1)
 
         query = make_query_string(sys.argv[argc:])
-        set_stdout_codec()
         with cli.initdb() as db:
             cli.search(db, query, oformat=oformat, sort=sort, limit=limit)
 
@@ -307,7 +300,6 @@ if __name__ == '__main__':
     elif cmd in ['tags']:
         argc = 2
         query = make_query_string(sys.argv[argc:], require=False)
-        set_stdout_codec()
         with cli.initdb() as db:
             cli.search(db, query, oformat='tags')
 
@@ -315,7 +307,6 @@ if __name__ == '__main__':
     elif cmd in ['bibtex','bib','b']:
         argc = 2
         query = make_query_string(sys.argv[argc:])
-        set_stdout_codec()
         with cli.initdb() as db:
             cli.search(db, query, oformat='bibtex')
 
@@ -404,7 +395,6 @@ if __name__ == '__main__':
     elif cmd in ['export']:
         outdir = sys.argv[2]
         query = make_query_string(sys.argv[3:])
-        set_stdout_codec()
         with cli.initdb() as db:
             cli.export(db, outdir, query)
 

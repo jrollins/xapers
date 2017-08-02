@@ -42,8 +42,8 @@ esac
 ORIGINAL_TERM=$TERM
 
 # For repeatability, reset the environment to known value.
-LANG=C
-LC_ALL=C
+LANG=C.UTF-8
+LC_ALL=C.UTF-8
 PAGER=cat
 TZ=UTC
 TERM=dumb

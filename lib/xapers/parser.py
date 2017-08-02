@@ -42,6 +42,7 @@ class ParserBase():
 ##################################################
 
 def parse_data(data):
+    """Parse binary file data into text (str)"""
     # FIXME: determine mime type
     mimetype = 'pdf'
 

@@ -22,6 +22,7 @@ import os
 import sys
 import xapian
 
+from . import util
 from .source import Sources
 from .documents import Documents, Document
 
@@ -215,20 +216,7 @@ class Database():
 
     # return a list of terms for prefix
     def _term_iter(self, prefix=None):
-        term_iter = iter(self.xapian)
-        if prefix:
-            plen = len(prefix)
-            term = term_iter.skip_to(prefix)
-            if not term.term.startswith(prefix):
-                return
-            yield term.term[plen:]
-        for term in term_iter:
-            if prefix:
-                if not term.term.startswith(prefix):
-                    break
-                yield term.term[plen:]
-            else:
-                yield term.term
+        return util.xapian_term_iter(self.xapian, prefix)
 
     def term_iter(self, name=None):
         """Generator of all terms in the database.

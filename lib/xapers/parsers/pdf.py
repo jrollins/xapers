@@ -11,7 +11,7 @@ def extract(data):
                             )
     (stdout, stderr) = proc.communicate(input=data)
     proc.wait()
-    return stdout
+    return stdout.decode()
 
 class Parser(ParserBase):
     def extract(self):

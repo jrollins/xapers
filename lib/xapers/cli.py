@@ -245,7 +245,7 @@ def add(db, query_string, infile=None, sid=None, tags=None, prompt=False):
         sys.exit(1)
 
     if infile and not file_data:
-        with open(infile, 'r') as f:
+        with open(infile, 'br') as f:
             file_data = f.read()
         file_name = os.path.basename(infile)
 
