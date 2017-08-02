@@ -134,7 +134,7 @@ def import_nci():
     try:
         from . import nci
     except ImportError:
-        print("The python-urwid package does not appear to be installed.", file=sys.stderr)
+        print("The python3-urwid package does not appear to be installed.", file=sys.stderr)
         print("Please install to be able to use the curses UI.", file=sys.stderr)
         sys.exit(1)
     return nci
