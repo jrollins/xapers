@@ -352,7 +352,7 @@ class Document():
         try:
             year = int(year)
         except ValueError:
-            pass
+            return
         prefix = self.db._find_prefix('year')
         for term in self._term_iter(prefix):
             self._remove_term(prefix, year)
