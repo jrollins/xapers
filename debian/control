@@ -7,8 +7,9 @@ Build-Depends:
  dh-python,
  pkg-config,
  poppler-utils,
- python3-pybtex,
  python3,
+ python3-pybtex,
+ python3-pycurl,
  python3-setuptools,
  python3-xapian,
 Standards-Version: 3.9.8
@@ -19,8 +20,8 @@ Package: xapers
 Architecture: all
 Depends:
  poppler-utils,
- python3-pybtex,
  python3-pkg-resources,
+ python3-pybtex,
  python3-xapian,
  ${misc:Depends},
  ${python3:Depends},

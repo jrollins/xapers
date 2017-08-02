@@ -1,8 +1,9 @@
 xapers (0.8.1-1) unstable; urgency=medium
 
   * Fix setup.py get rid of install_requires
+  * Fix build depends for python3-pycurl
 
- -- Jameson Graef Rollins <jrollins@finestructure.net>  Wed, 02 Aug 2017 11:05:15 -0700
+ -- Jameson Graef Rollins <jrollins@finestructure.net>  Wed, 02 Aug 2017 11:29:55 -0700
 
 xapers (0.8-1) unstable; urgency=medium
 
