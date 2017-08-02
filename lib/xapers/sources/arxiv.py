@@ -68,7 +68,7 @@ def fetch_bibtex(id):
     f.close()
 
     parser = MyHTMLParser()
-    parser.feed(html)
+    parser.feed(str(html))
 
     data = {
         'arxiv':   id,
