@@ -26,8 +26,8 @@ Xapers provides source modules for some common online resources:
   * cryptoeprint: Cryptology ePrint Archive (https://eprint.iacr.org/)
 
 Contributions of additional source interface modules is highly
-encouraged.  See the SOURCES file, included with the xapers source,
-for info on creating new sources.
+encouraged.  See the "Document Sources" section below for info on
+creating new sources.
 
 Xapers is heavily inspired by the notmuch mail indexing system [2].
 
