@@ -10,6 +10,7 @@ override_dh_installchangelogs:
 	dh_installchangelogs NEWS.md
 
 override_dh_clean:
+	rm -rf lib/xapers.egg-info
 	rm -rf test/test-results/
 	rm -rf test/tmp.all/
 	dh_clean
