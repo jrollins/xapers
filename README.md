@@ -31,9 +31,9 @@ creating new sources.
 
 Xapers is heavily inspired by the notmuch mail indexing system [2].
 
-[0] http://www.xapian.org/
-[1] http://www.bibtex.org/
-[2] http://notmuchmail.org/
+  * [0] http://www.xapian.org/
+  * [1] http://www.bibtex.org/
+  * [2] http://notmuchmail.org/
 
 ![xapers ncurses UI]](screenshot.png "xapers ncurses UI")
 
