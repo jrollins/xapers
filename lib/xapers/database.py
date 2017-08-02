@@ -46,6 +46,8 @@ class DatabaseInitializationError(DatabaseError):
 class DatabaseLockError(DatabaseError):
     pass
 
+DatabaseModifiedError = xapian.DatabaseModifiedError
+
 ##################################################
 
 class Database():
