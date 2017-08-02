@@ -141,7 +141,7 @@ def import_nci():
 
 ########################################################################
 
-if __name__ == '__main__':
+def main():
 
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
@@ -529,3 +529,6 @@ if __name__ == '__main__':
             print("Command not specified.", file=sys.stderr)
         print("See \"help\" for more information.", file=sys.stderr)
         sys.exit(1)
+
+if __name__ == '__main__':
+    main()

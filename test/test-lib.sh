@@ -697,7 +697,8 @@ rm -fr "$test" || {
 mkdir -p "${test}"
 
 # load local test library
-. ./test-local.sh
+shopt -s expand_aliases
+source ./test-local.sh
 
 # Use -P to resolve symlinks in our working directory so that the cwd
 # in subprocesses like git equals our $PWD (for pathname comparisons).
