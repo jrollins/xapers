@@ -20,7 +20,6 @@ Jameson Rollins <jrollins@finestructure.net>
 
 import os
 import sys
-import sets
 import shutil
 import readline
 
