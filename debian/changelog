@@ -1,3 +1,9 @@
+xapers (0.8-1) unstable; urgency=medium
+
+  * New relase (python 3 conversion)
+
+ -- Jameson Graef Rollins <jrollins@finestructure.net>  Wed, 02 Aug 2017 09:50:53 -0700
+
 xapers (0.7.1-1) unstable; urgency=medium
 
   * New release

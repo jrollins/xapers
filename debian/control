@@ -7,11 +7,11 @@ Build-Depends:
  dh-python,
  pkg-config,
  poppler-utils,
- pybtex,
- python,
- python-setuptools,
- python-xapian,
-Standards-Version: 3.9.8
+ python3-pybtex,
+ python3,
+ python3-setuptools,
+ python3-xapian,
+Standards-Version: 3.9.9
 Homepage: https://finestructure.net/xapers
 Vcs-Git: https://finestructure.net/git/xapers
 
@@ -19,14 +19,14 @@ Package: xapers
 Architecture: all
 Depends:
  poppler-utils,
- pybtex,
- python-pkg-resources,
- python-xapian,
+ python3-pybtex,
+ python3-pkg-resources,
+ python3-xapian,
  ${misc:Depends},
- ${python:Depends},
+ ${python3:Depends},
 Recommends:
- python-pycurl,
- python-urwid,
+ python3-pycurl,
+ python3-urwid,
  xclip,
  xdg-utils,
 Description: Personal journal article management and indexing system
