@@ -20,50 +20,33 @@ Jameson Rollins <jrollins@finestructure.net>
 
 import os
 
-##################################################
-
 class ParseError(Exception):
-    """Base class for Xapers parser exceptions."""
-    def __init__(self, msg):
-        self.msg = msg
-    def __str__(self):
-        return self.msg
+    pass
 
-##################################################
+def parse_data(data, mimetype='pdf'):
+    """Parse binary data of specified mime type into text (str)
 
-class ParserBase():
-    """Base class for Xapers document parsering."""
-    def __init__(self, path):
-        self.path = os.path.expanduser(path)
-
-    def extract(self):
-        pass
-
-##################################################
-
-def parse_data(data):
-    # FIXME: determine mime type
-    mimetype = 'pdf'
-
-    from xapers.parsers.pdf import extract
+    """
 
     try:
-        text = extract(data)
-    except Exception, e:
+        mod = __import__('xapers.parsers.' + mimetype, fromlist=['Parser'])
+        parse_func = getattr(mod, 'parse')
+    except ImportError:
+        raise ParseError("Unsupported mime type '%s'." % mimetype)
+
+    try:
+        text = parse_func(data)
+    except Exception as e:
         raise ParseError("Could not parse file: %s" % e)
 
     return text
 
 def parse_file(path):
+    """Parse file for text (str)
+
+    """
+
     # FIXME: determine mime type
-    mimetype = 'pdf'
-
-    try:
-        mod = __import__('xapers.parsers.' + mimetype, fromlist=['Parser'])
-        pmod = getattr(mod, 'Parser')
-    except ImportError:
-        raise ParseError("Unknown parser '%s'." % mimetype)
-
 
     if not os.path.exists(path):
         raise ParseError("File '%s' not found." % path)
@@ -71,9 +54,7 @@ def parse_file(path):
     if not os.path.isfile(path):
         raise ParseError("File '%s' is not a regular file." % path)
 
-    try:
-        text = pmod(path).extract()
-    except Exception, e:
-        raise ParseError("Could not parse file: %s" % e)
+    with open(path, 'br') as f:
+        data = f.read()
 
-    return text
+    return parse_data(data)

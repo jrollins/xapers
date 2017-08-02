@@ -1,6 +1,6 @@
 import sys
 import pycurl
-import cStringIO
+import io
 import tempfile
 from xapers.bibtex import data2bib
 
@@ -25,7 +25,7 @@ def dccRetrieveXML(docid):
     curl.setopt(pycurl.USERPWD, ':')
     curl.setopt(pycurl.FOLLOWLOCATION, 1)
 
-    doc = cStringIO.StringIO()
+    doc = io.StringIO()
     curl.setopt(pycurl.WRITEFUNCTION, doc.write)
     try:
         curl.perform()
@@ -69,7 +69,7 @@ def fetch_bibtex(id):
     try:
         title, authors, year, abstract = dccXMLExtract(xml)
     except:
-        print >>sys.stderr, xml
+        print(xml, file=sys.stderr)
         raise
 
     data = {

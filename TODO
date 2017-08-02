@@ -1,4 +1,5 @@
 * unique bibtex keys (handle conflicting) (use id?)
+* make 'date' alias of 'year'
 * nci: translate tex in fields
 * translate journal abbreviations in bibtex
 * need *something* for docs without sources
@@ -16,6 +17,7 @@
 * rework db/doc interface
    * doc is just directory and xapian_doc
    * db does write/index on sync
+* db: can we force source prefixes to be OP_OR?
 
 doc:
 * add ability to remove source sid
@@ -67,3 +69,33 @@ BUGS
 
 * can not add --file when source contains '/'
   * "xapers add --source=arXiv:hep-th/9806203 --file"
+
+* nci choaks on unknown sources:
+  File "/usr/lib/python2.7/dist-packages/xapers/source.py", line 181, in get_source
+    raise SourceError("unknown source: %s" % name)
+  xapers.source.SourceError: unknown source: url
+
+* uncaught QueryParserError:
+
+servo:~ 1$ xapers show tag:lsc date:2016...
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/runpy.py", line 174, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "/usr/lib/python2.7/runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "/usr/lib/python2.7/dist-packages/xapers/__main__.py", line 330, in <module>
+    nci.UI(cmd=args)
+  File "/usr/lib/python2.7/dist-packages/xapers/nci/ui.py", line 75, in __init__
+    self.newbuffer(cmd)
+  File "/usr/lib/python2.7/dist-packages/xapers/nci/ui.py", line 96, in newbuffer
+    buf = search.Search(self, query)
+  File "/usr/lib/python2.7/dist-packages/xapers/nci/search.py", line 370, in __init__
+    self.__set_search()
+  File "/usr/lib/python2.7/dist-packages/xapers/nci/search.py", line 377, in __set_search
+    count = self.ui.db.count(self.query)
+  File "/usr/lib/python2.7/dist-packages/xapers/database.py", line 318, in count
+    return self._search(query_string).get_matches_estimated()
+  File "/usr/lib/python2.7/dist-packages/xapers/database.py", line 285, in _search
+    query = self.query_parser.parse_query(query_string)
+xapian.QueryParserError: Unknown range operation
+servo:~ 1$ 

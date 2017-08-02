@@ -1,5 +1,5 @@
-import urllib
-from HTMLParser import HTMLParser
+import urllib.request, urllib.parse, urllib.error
+from html.parser import HTMLParser
 
 description = "Cryptology ePrint Archive"
 
@@ -42,9 +42,9 @@ def fetch_bibtex(id):
     url = bibtex_url % id
 
     # this would be tons easier in python3
-    f = urllib.urlopen(url)
+    f = urllib.request.urlopen(url)
     html = f.read()
-    ct = filter(lambda x: x.startswith('charset='), map(str.strip, f.headers.typeheader.split(';')))
+    ct = [x for x in map(str.strip, f.headers.typeheader.split(';')) if x.startswith('charset=')]
     if ct:
         charset = ct[-1].split('=')[1]
     else:
@@ -54,18 +54,18 @@ def fetch_bibtex(id):
     p = IACRParser()
     p.feed(html)
     try:
-        ret = unicode(p.data, charset)
-    except LookupError, e:
+        ret = str(p.data, charset)
+    except LookupError as e:
         # if they send some super mangled charset we can try again
         # with the default:
-        ret = unicode(p.data, 'iso8859-1')
+        ret = str(p.data, 'iso8859-1')
     return ret
 
 
 def fetch_file(id):
     url = pdf_url % id
 
-    f = urllib.urlopen(url)
+    f = urllib.request.urlopen(url)
     pdf = f.read()
     f.close()
 

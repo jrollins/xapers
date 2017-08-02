@@ -22,6 +22,7 @@ import os
 import sys
 import xapian
 
+from . import util
 from .source import Sources
 from .documents import Documents, Document
 
@@ -44,6 +45,8 @@ class DatabaseInitializationError(DatabaseError):
 
 class DatabaseLockError(DatabaseError):
     pass
+
+DatabaseModifiedError = xapian.DatabaseModifiedError
 
 ##################################################
 
@@ -157,20 +160,20 @@ class Database():
         self.query_parser.set_default_op(xapian.Query.OP_AND)
 
         # add boolean internal prefixes
-        for name, prefix in self.BOOLEAN_PREFIX.iteritems():
+        for name, prefix in self.BOOLEAN_PREFIX.items():
             self.query_parser.add_boolean_prefix(name, prefix)
         # for prefixes that can be applied multiply to the same
         # document (like tags) set the filter grouping to use AND:
         # https://xapian.org/docs/apidoc/html/classXapian_1_1QueryParser.html#a67d25f9297bb98c2101a03ff3d60cf30
-        for name, prefix in self.BOOLEAN_PREFIX_MULTI.iteritems():
+        for name, prefix in self.BOOLEAN_PREFIX_MULTI.items():
             self.query_parser.add_boolean_prefix(name, prefix, False)
 
         # add probabalistic prefixes
-        for name, prefix in self.PROBABILISTIC_PREFIX.iteritems():
+        for name, prefix in self.PROBABILISTIC_PREFIX.items():
             self.query_parser.add_prefix(name, prefix)
 
         # add value facets
-        for name, facet in self.NUMBER_VALUE_FACET.iteritems():
+        for name, facet in self.NUMBER_VALUE_FACET.items():
             self.query_parser.add_valuerangeprocessor(
                 xapian.NumberValueRangeProcessor(facet, name+':')
                 )
@@ -200,7 +203,7 @@ class Database():
             return False
 
     def __getitem__(self, docid):
-        if type(docid) not in [int, long]:
+        if type(docid) not in [int, int]:
             raise TypeError("docid must be an int")
         xapian_doc = self.xapian.get_document(docid)
         return Document(self, xapian_doc)
@@ -215,20 +218,7 @@ class Database():
 
     # return a list of terms for prefix
     def _term_iter(self, prefix=None):
-        term_iter = iter(self.xapian)
-        if prefix:
-            plen = len(prefix)
-            term = term_iter.skip_to(prefix)
-            if not term.term.startswith(prefix):
-                return
-            yield term.term[plen:]
-        for term in term_iter:
-            if prefix:
-                if not term.term.startswith(prefix):
-                    break
-                yield term.term[plen:]
-            else:
-                yield term.term
+        return util.xapian_term_iter(self.xapian, prefix)
 
     def term_iter(self, name=None):
         """Generator of all terms in the database.
@@ -285,8 +275,8 @@ class Database():
             query = self.query_parser.parse_query(query_string)
 
         if os.getenv('XAPERS_DEBUG_QUERY'):
-            print >>sys.stderr, "query string:", query_string
-            print >>sys.stderr, "final query:", query
+            print("query string:", query_string, file=sys.stderr)
+            print("final query:", query, file=sys.stderr)
 
         # FIXME: need to catch Xapian::Error when using enquire
         enquire.set_query(query)
@@ -375,7 +365,7 @@ class Database():
                 continue
 
             if log:
-                print >>sys.stderr, docdir
+                print(docdir, file=sys.stderr)
 
             docfiles = os.listdir(docdir)
             if not docfiles:
@@ -383,7 +373,7 @@ class Database():
                 continue
 
             if log:
-                print >>sys.stderr, '  docid:', docid
+                print('  docid:', docid, file=sys.stderr)
 
             try:
                 doc = self[docid]
@@ -394,16 +384,16 @@ class Database():
                 dpath = os.path.join(docdir, dfile)
                 if dfile == 'bibtex':
                     if log:
-                        print >>sys.stderr, '  adding bibtex'
+                        print('  adding bibtex', file=sys.stderr)
                     doc.add_bibtex(dpath)
                 elif dfile == 'tags':
                     if log:
-                        print >>sys.stderr, '  adding tags'
+                        print('  adding tags', file=sys.stderr)
                     with open(dpath, 'r') as f:
                         tags = f.read().strip().split('\n')
                     doc.add_tags(tags)
                 else: #elif os.path.splitext(dpath)[1] == '.pdf':
                     if log:
-                        print >>sys.stderr, '  adding file:', dfile
+                        print('  adding file:', dfile, file=sys.stderr)
                     doc.add_file(dpath)
             doc.sync()

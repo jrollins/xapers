@@ -20,7 +20,6 @@ Jameson Rollins <jrollins@finestructure.net>
 
 import os
 import sys
-import codecs
 import signal
 
 from . import cli
@@ -33,8 +32,8 @@ from .parser import ParseError
 PROG = 'xapers'
 
 def usage():
-    print "Usage:", PROG, "<command> [args...]"
-    print """
+    print("Usage:", PROG, "<command> [args...]")
+    print("""
 Commands:
 
   add [options] [<search-terms>]      Add a new document or update existing.
@@ -85,10 +84,10 @@ variable, or defaults to '~/.xapers/docs' if not specified (the
 directory is allowed to be a symlink).
 
 See 'xapers help search' for more information on term definitions and
-search syntax."""
+search syntax.""")
 
 def usage_search():
-    print """Xapers supports a common syntax for search terms.
+    print("""Xapers supports a common syntax for search terms.
 
 Search can consist of free-form text and quoted phrases.  Terms can be
 combined with standard Boolean operators.  All terms are combined with
@@ -115,7 +114,7 @@ Publication years must be four-digit integers.
 
 See the following for more information on search terms:
 
-  http://xapian.org/docs/queryparser.html"""
+  http://xapian.org/docs/queryparser.html""")
 
 ########################################################################
 
@@ -125,7 +124,7 @@ def make_query_string(terms, require=True):
     string = str.join(' ', terms)
     if string == '':
         if require:
-            print >>sys.stderr, "Must specify a search term."
+            print("Must specify a search term.", file=sys.stderr)
             sys.exit(1)
         else:
             string = '*'
@@ -133,21 +132,16 @@ def make_query_string(terms, require=True):
 
 def import_nci():
     try:
-        import nci
+        from . import nci
     except ImportError:
-        print >>sys.stderr, "The python-urwid package does not appear to be installed."
-        print >>sys.stderr, "Please install to be able to use the curses UI."
+        print("The python3-urwid package does not appear to be installed.", file=sys.stderr)
+        print("Please install to be able to use the curses UI.", file=sys.stderr)
         sys.exit(1)
     return nci
 
-def set_stdout_codec():
-    # set the stdout codec to properly handle utf8 characters
-    SYS_STDOUT = sys.stdout
-    sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-
 ########################################################################
 
-if __name__ == '__main__':
+def main():
 
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
@@ -216,11 +210,11 @@ if __name__ == '__main__':
         try:
             bibfile = sys.argv[argc]
         except IndexError:
-            print >>sys.stderr, "Must specify bibtex file to import."
+            print("Must specify bibtex file to import.", file=sys.stderr)
             sys.exit(1)
 
         if not os.path.exists(bibfile):
-            print >>sys.stderr, "File not found: %s" % bibfile
+            print("File not found: %s" % bibfile, file=sys.stderr)
             sys.exit(1)
 
         with cli.initdb(writable=True, create=True) as db:
@@ -233,12 +227,12 @@ if __name__ == '__main__':
         with cli.initdb(writable=True) as db:
             for doc in db.search(query):
                 try:
-                    print >>sys.stderr, "Updating %s..." % doc.docid,
+                    print("Updating %s..." % doc.docid, end=' ', file=sys.stderr)
                     doc.update_from_bibtex()
                     doc.sync()
-                    print >>sys.stderr, "done."
+                    print("done.", file=sys.stderr)
                 except:
-                    print >>sys.stderr, "\n"
+                    print("\n", file=sys.stderr)
                     raise
 
     ########################################
@@ -259,16 +253,16 @@ if __name__ == '__main__':
         with cli.initdb(writable=True) as db:
             count = db.count(query)
             if count == 0:
-                print >>sys.stderr, "No documents found for query."
+                print("No documents found for query.", file=sys.stderr)
                 sys.exit(1)
             for doc in db.search(query):
                 if prompt:
-                    resp = raw_input("Type 'yes' to delete document id:%d: " % doc.docid)
+                    resp = input("Type 'yes' to delete document id:%d: " % doc.docid)
                     if resp != 'yes':
                         continue
-                print >>sys.stderr, "deleting id:%d..." % doc.docid,
+                print("deleting id:%d..." % doc.docid, end=' ', file=sys.stderr)
                 doc.purge()
-                print >>sys.stderr, "done."
+                print("done.", file=sys.stderr)
 
     ########################################
     elif cmd in ['search','s']:
@@ -291,15 +285,14 @@ if __name__ == '__main__':
             argc += 1
 
         if oformat not in ['summary','bibtex','tags','sources','keys','files']:
-            print >>sys.stderr, "Unknown output format."
+            print("Unknown output format.", file=sys.stderr)
             sys.exit(1)
 
         if sort not in ['relevance','year']:
-            print >>sys.stderr, "Unknown sort parameter."
+            print("Unknown sort parameter.", file=sys.stderr)
             sys.exit(1)
 
         query = make_query_string(sys.argv[argc:])
-        set_stdout_codec()
         with cli.initdb() as db:
             cli.search(db, query, oformat=oformat, sort=sort, limit=limit)
 
@@ -307,7 +300,6 @@ if __name__ == '__main__':
     elif cmd in ['tags']:
         argc = 2
         query = make_query_string(sys.argv[argc:], require=False)
-        set_stdout_codec()
         with cli.initdb() as db:
             cli.search(db, query, oformat='tags')
 
@@ -315,7 +307,6 @@ if __name__ == '__main__':
     elif cmd in ['bibtex','bib','b']:
         argc = 2
         query = make_query_string(sys.argv[argc:])
-        set_stdout_codec()
         with cli.initdb() as db:
             cli.search(db, query, oformat='bibtex')
 
@@ -350,11 +341,11 @@ if __name__ == '__main__':
             argc += 1
 
         if not add_tags and not remove_tags:
-            print >>sys.stderr, "Must specify tags to add or remove."
+            print("Must specify tags to add or remove.", file=sys.stderr)
             sys.exit(1)
 
         if '' in add_tags:
-            print >>sys.stderr, "Null tags not allowed."
+            print("Null tags not allowed.", file=sys.stderr)
             sys.exit(1)
 
         query = make_query_string(sys.argv[argc:])
@@ -380,11 +371,11 @@ if __name__ == '__main__':
         with cli.initdb() as db:
             if query == '*':
                 for term in db.term_iter(prefix):
-                    print term
+                    print(term)
             else:
                 for doc in db.search(query):
                     for term in doc.term_iter(prefix):
-                        print term
+                        print(term)
 
     ########################################
     elif cmd in ['maxid']:
@@ -392,19 +383,18 @@ if __name__ == '__main__':
         with cli.initdb() as db:
             for doc in db.search('*'):
                 docid = max(docid, doc.docid)
-            print 'id:%d' % docid
+            print('id:%d' % docid)
 
     ########################################
     elif cmd in ['count']:
         query = make_query_string(sys.argv[2:], require=False)
         with cli.initdb() as db:
-            print db.count(query)
+            print(db.count(query))
 
     ########################################
     elif cmd in ['export']:
         outdir = sys.argv[2]
         query = make_query_string(sys.argv[3:])
-        set_stdout_codec()
         with cli.initdb() as db:
             cli.export(db, outdir, query)
 
@@ -435,7 +425,7 @@ if __name__ == '__main__':
                 path = 'builtin'
             else:
                 path = source.path
-            print format % (name, desc, path)
+            print(format % (name, desc, path))
 
     ########################################
     elif cmd in ['source2bib', 's2b', 'source2url', 's2u', 'source2file', 's2f']:
@@ -454,12 +444,12 @@ if __name__ == '__main__':
         try:
             sss = sys.argv[argc:]
         except IndexError:
-            print >>sys.stderr, "Must specify source to retrieve."
+            print("Must specify source to retrieve.", file=sys.stderr)
             sys.exit(1)
 
         if cmd in ['source2file', 's2f']:
             if len(sss) > 1:
-                print >>sys.stderr, "source2file can only retrieve file for single source."
+                print("source2file can only retrieve file for single source.", file=sys.stderr)
                 sys.exit(1)
 
         sources = Sources()
@@ -468,36 +458,36 @@ if __name__ == '__main__':
             try:
                 item = sources.match_source(ss)
             except SourceError as e:
-                print >>sys.stderr, e
+                print(e, file=sys.stderr)
                 sys.exit(1)
 
             if cmd in ['source2url', 's2u']:
-                print item.url
+                print(item.url)
                 continue
 
             elif cmd in ['source2bib', 's2b']:
                 try:
                     bibtex = item.fetch_bibtex()
                 except Exception as e:
-                    print >>sys.stderr, "Could not retrieve bibtex: %s" % e
+                    print("Could not retrieve bibtex: %s" % e, file=sys.stderr)
                     sys.exit(1)
 
                 if outraw:
-                    print bibtex
+                    print(bibtex)
                 else:
                     try:
-                        print Bibtex(bibtex)[0].as_string()
+                        print(Bibtex(bibtex)[0].as_string())
                     except:
-                        print >>sys.stderr, "Failed to parse retrieved bibtex data."
-                        print >>sys.stderr, "Use --raw option to view raw retrieved data."
+                        print("Failed to parse retrieved bibtex data.", file=sys.stderr)
+                        print("Use --raw option to view raw retrieved data.", file=sys.stderr)
                         sys.exit(1)
 
             elif cmd in ['source2file', 's2f']:
                 try:
                     name, data = item.fetch_file()
-                    print data
+                    print(data)
                 except Exception as e:
-                    print >>sys.stderr, "Could not retrieve file: %s" % e
+                    print("Could not retrieve file: %s" % e, file=sys.stderr)
                     sys.exit(1)
 
     ########################################
@@ -505,23 +495,23 @@ if __name__ == '__main__':
         try:
             infile = sys.argv[2]
         except IndexError:
-            print >>sys.stderr, "Must specify document to scan."
+            print("Must specify document to scan.", file=sys.stderr)
             sys.exit(1)
 
         try:
             items = Sources().scan_file(infile)
         except ParseError as e:
-            print >>sys.stderr, "Parse error: %s" % e
-            print >>sys.stderr, "Is file '%s' a PDF?" % infile
+            print("Parse error: %s" % e, file=sys.stderr)
+            print("Is file '%s' a PDF?" % infile, file=sys.stderr)
             sys.exit(1)
 
         for item in items:
-            print item
+            print(item)
 
     ########################################
     elif cmd in ['version','--version','-v']:
-        import version
-        print 'xapers', version.__version__
+        from . import version
+        print('xapers', version.__version__)
 
     ########################################
     elif cmd in ['help','h','--help','-h']:
@@ -534,8 +524,11 @@ if __name__ == '__main__':
     ########################################
     else:
         if cmd:
-            print >>sys.stderr, "Unknown command '%s'." % cmd
+            print("Unknown command '%s'." % cmd, file=sys.stderr)
         else:
-            print >>sys.stderr, "Command not specified."
-        print >>sys.stderr, "See \"help\" for more information."
+            print("Command not specified.", file=sys.stderr)
+        print("See \"help\" for more information.", file=sys.stderr)
         sys.exit(1)
+
+if __name__ == '__main__':
+    main()

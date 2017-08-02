@@ -20,7 +20,6 @@ Jameson Rollins <jrollins@finestructure.net>
 
 import os
 import sys
-import sets
 import shutil
 import readline
 
@@ -38,15 +37,15 @@ def initdb(writable=False, create=False, force=False):
     try:
         return database.Database(xroot, writable=writable, create=create, force=force)
     except database.DatabaseUninitializedError as e:
-        print >>sys.stderr, e
-        print >>sys.stderr, "Import a document to initialize."
+        print(e, file=sys.stderr)
+        print("Import a document to initialize.", file=sys.stderr)
         sys.exit(1)
     except database.DatabaseInitializationError as e:
-        print >>sys.stderr, e
-        print >>sys.stderr, "Either clear the directory and add new files, or use 'retore' to restore from existing data."
+        print(e, file=sys.stderr)
+        print("Either clear the directory and add new files, or use 'retore' to restore from existing data.", file=sys.stderr)
         sys.exit(1)
     except database.DatabaseError as e:
-        print >>sys.stderr, e
+        print(e, file=sys.stderr)
         sys.exit(1)
 
 ############################################################
@@ -66,12 +65,12 @@ class Completer:
 
 def prompt_for_file(infile):
     if infile:
-        print >>sys.stderr, 'file: %s' % infile
+        print('file: %s' % infile, file=sys.stderr)
     else:
         readline.set_startup_hook()
         readline.parse_and_bind('')
         readline.set_completer()
-        infile = raw_input('file: ')
+        infile = input('file: ')
         if infile == '':
             infile = None
     return infile
@@ -85,7 +84,7 @@ def prompt_for_source(db, sources):
     completer = Completer(sources)
     readline.set_completer(completer.terms)
     readline.set_completer_delims(' ')
-    source = raw_input('source: ')
+    source = input('source: ')
     if source == '':
         source = None
     return source
@@ -93,7 +92,7 @@ def prompt_for_source(db, sources):
 def prompt_for_tags(db, tags):
     # always prompt for tags, and append to initial
     if tags:
-        print >>sys.stderr, 'initial tags: %s' % ' '.join(tags)
+        print('initial tags: %s' % ' '.join(tags), file=sys.stderr)
     else:
         tags = []
     if db:
@@ -106,7 +105,7 @@ def prompt_for_tags(db, tags):
     readline.set_completer(completer.terms)
     readline.set_completer_delims(' ')
     while True:
-        tag = raw_input('tag: ')
+        tag = input('tag: ')
         if tag and tag != '':
             tags.append(tag.strip())
         else:
@@ -126,13 +125,13 @@ def print_doc_summary(doc):
     if not key:
         key = ''
 
-    print "id:%d [%s] {%s} (%s) \"%s\"" % (
+    print("id:%d [%s] {%s} (%s) \"%s\"" % (
         docid,
         ' '.join(sources),
         key,
         ' '.join(tags),
         title,
-    )
+    ))
 
 ############################################################
 
@@ -154,8 +153,8 @@ def add(db, query_string, infile=None, sid=None, tags=None, prompt=False):
 
     if query_string:
         if db.count(query_string) != 1:
-            print >>sys.stderr, "Search '%s' did not match a single document." % query_string
-            print >>sys.stderr, "Aborting."
+            print("Search '%s' did not match a single document." % query_string, file=sys.stderr)
+            print("Aborting.", file=sys.stderr)
             sys.exit(1)
 
         for doc in db.search(query_string):
@@ -172,28 +171,28 @@ def add(db, query_string, infile=None, sid=None, tags=None, prompt=False):
         if infile is not True:
             infile = prompt_for_file(infile)
 
-            print >>sys.stderr, "Scanning document for source identifiers..."
+            print("Scanning document for source identifiers...", file=sys.stderr)
             try:
                 ss = sources.scan_file(infile)
             except ParseError as e:
-                print >>sys.stderr, "\n"
-                print >>sys.stderr, "Parse error: %s" % e
+                print("\n", file=sys.stderr)
+                print("Parse error: %s" % e, file=sys.stderr)
                 sys.exit(1)
             if len(ss) == 0:
-                print >>sys.stderr, "0 source ids found."
+                print("0 source ids found.", file=sys.stderr)
             else:
                 if len(ss) == 1:
-                    print >>sys.stderr, "1 source id found:"
+                    print("1 source id found:", file=sys.stderr)
                 else:
-                    print >>sys.stderr, "%d source ids found:" % (len(ss))
+                    print("%d source ids found:" % (len(ss)), file=sys.stderr)
                 for sid in ss:
-                    print >>sys.stderr, "  %s" % (sid)
+                    print("  %s" % (sid), file=sys.stderr)
                 doc_sids += [s.sid for s in ss]
         doc_sid = prompt_for_source(db, doc_sids)
         tags = prompt_for_tags(db, tags)
 
     if not query_string and not infile and not doc_sid:
-        print >>sys.stderr, "Must specify file or source to import, or query to update existing document."
+        print("Must specify file or source to import, or query to update existing document.", file=sys.stderr)
         sys.exit(1)
 
     ##################################
@@ -208,44 +207,44 @@ def add(db, query_string, infile=None, sid=None, tags=None, prompt=False):
         try:
             source = sources.match_source(doc_sid)
         except SourceError as e:
-            print >>sys.stderr, e
+            print(e, file=sys.stderr)
             sys.exit(1)
 
         # check that the source doesn't match an existing doc
         sdoc = db.doc_for_source(source.sid)
         if sdoc:
             if doc and sdoc != doc:
-                print >>sys.stderr, "A different document already exists for source '%s'." % (doc_sid)
-                print >>sys.stderr, "Aborting."
+                print("A different document already exists for source '%s'." % (doc_sid), file=sys.stderr)
+                print("Aborting.", file=sys.stderr)
                 sys.exit(1)
-            print >>sys.stderr, "Source '%s' found in database.  Updating existing document..." % (doc_sid)
+            print("Source '%s' found in database.  Updating existing document..." % (doc_sid), file=sys.stderr)
             doc = sdoc
 
         try:
-            print >>sys.stderr, "Retrieving bibtex...",
+            print("Retrieving bibtex...", end=' ', file=sys.stderr)
             bibtex = source.fetch_bibtex()
-            print >>sys.stderr, "done."
+            print("done.", file=sys.stderr)
         except SourceError as e:
-            print >>sys.stderr, "\n"
-            print >>sys.stderr, "Could not retrieve bibtex: %s" % e
+            print("\n", file=sys.stderr)
+            print("Could not retrieve bibtex: %s" % e, file=sys.stderr)
             sys.exit(1)
 
         if infile is True:
             try:
-                print >>sys.stderr, "Retrieving file...",
+                print("Retrieving file...", end=' ', file=sys.stderr)
                 file_name, file_data = source.fetch_file()
-                print >>sys.stderr, "done."
+                print("done.", file=sys.stderr)
             except SourceError as e:
-                print >>sys.stderr, "\n"
-                print >>sys.stderr, "Could not retrieve file: %s" % e
+                print("\n", file=sys.stderr)
+                print("Could not retrieve file: %s" % e, file=sys.stderr)
                 sys.exit(1)
 
     elif infile is True:
-        print >>sys.stderr, "Must specify source with retrieve file option."
+        print("Must specify source with retrieve file option.", file=sys.stderr)
         sys.exit(1)
 
     if infile and not file_data:
-        with open(infile, 'r') as f:
+        with open(infile, 'br') as f:
             file_data = f.read()
         file_name = os.path.basename(infile)
 
@@ -260,16 +259,16 @@ def add(db, query_string, infile=None, sid=None, tags=None, prompt=False):
 
     if bibtex:
         try:
-            print >>sys.stderr, "Adding bibtex...",
+            print("Adding bibtex...", end=' ', file=sys.stderr)
             doc.add_bibtex(bibtex)
-            print >>sys.stderr, "done."
+            print("done.", file=sys.stderr)
         except BibtexError as e:
-            print >>sys.stderr, "\n"
-            print >>sys.stderr, e
-            print >>sys.stderr, "Bibtex must be a plain text file with a single bibtex entry."
+            print("\n", file=sys.stderr)
+            print(e, file=sys.stderr)
+            print("Bibtex must be a plain text file with a single bibtex entry.", file=sys.stderr)
             sys.exit(1)
         except:
-            print >>sys.stderr, "\n"
+            print("\n", file=sys.stderr)
             raise
 
     # add source sid if it hasn't been added yet
@@ -278,35 +277,35 @@ def add(db, query_string, infile=None, sid=None, tags=None, prompt=False):
 
     if infile:
         try:
-            print >>sys.stderr, "Adding file...",
+            print("Adding file...", end=' ', file=sys.stderr)
             doc.add_file_data(file_name, file_data)
-            print >>sys.stderr, "done."
+            print("done.", file=sys.stderr)
         except ParseError as e:
-            print >>sys.stderr, "\n"
-            print >>sys.stderr, "Parse error: %s" % e
+            print("\n", file=sys.stderr)
+            print("Parse error: %s" % e, file=sys.stderr)
             sys.exit(1)
         except:
-            print >>sys.stderr, "\n"
+            print("\n", file=sys.stderr)
             raise
 
     if tags:
         try:
-            print >>sys.stderr, "Adding tags...",
+            print("Adding tags...", end=' ', file=sys.stderr)
             doc.add_tags(tags)
-            print >>sys.stderr, "done."
+            print("done.", file=sys.stderr)
         except:
-            print >>sys.stderr, "\n"
+            print("\n", file=sys.stderr)
             raise
 
     ##################################
     # sync the doc to db and disk
 
     try:
-        print >>sys.stderr, "Syncing document...",
+        print("Syncing document...", end=' ', file=sys.stderr)
         doc.sync()
-        print >>sys.stderr, "done.\n",
+        print("done.\n", end=' ', file=sys.stderr)
     except:
-        print >>sys.stderr, "\n"
+        print("\n", file=sys.stderr)
         raise
 
     print_doc_summary(doc)
@@ -320,7 +319,7 @@ def importbib(db, bibfile, tags=[], overwrite=False):
     sources = Sources()
 
     for entry in sorted(Bibtex(bibfile), key=lambda entry: entry.key):
-        print >>sys.stderr, entry.key
+        print(entry.key, file=sys.stderr)
 
         try:
             docs = []
@@ -341,15 +340,15 @@ def importbib(db, bibfile, tags=[], overwrite=False):
                 doc = Document(db)
             elif len(docs) > 0:
                 if len(docs) > 1:
-                    print >>sys.stderr, "  Multiple distinct docs found for entry.  Using first found."
+                    print("  Multiple distinct docs found for entry.  Using first found.", file=sys.stderr)
                 doc = docs[0]
-                print >>sys.stderr, "  Updating id:%d..." % (doc.docid)
+                print("  Updating id:%d..." % (doc.docid), file=sys.stderr)
 
             doc.add_bibentry(entry)
 
             filepath = entry.get_file()
             if filepath:
-                print >>sys.stderr, "  Adding file: %s" % filepath
+                print("  Adding file: %s" % filepath, file=sys.stderr)
                 doc.add_file(filepath)
 
             doc.add_tags(tags)
@@ -357,20 +356,20 @@ def importbib(db, bibfile, tags=[], overwrite=False):
             doc.sync()
 
         except BibtexError as e:
-            print >>sys.stderr, "  Error processing entry %s: %s" % (entry.key, e)
-            print >>sys.stderr
+            print("  Error processing entry %s: %s" % (entry.key, e), file=sys.stderr)
+            print(file=sys.stderr)
             errors.append(entry.key)
 
     if errors:
-        print >>sys.stderr
-        print >>sys.stderr, "Failed to import %d" % (len(errors)),
+        print(file=sys.stderr)
+        print("Failed to import %d" % (len(errors)), end=' ', file=sys.stderr)
         if len(errors) == 1:
-            print >>sys.stderr, "entry",
+            print("entry", end=' ', file=sys.stderr)
         else:
-            print >>sys.stderr, "entries",
-        print >>sys.stderr, "from bibtex:"
+            print("entries", end=' ', file=sys.stderr)
+        print("from bibtex:", file=sys.stderr)
         for error in errors:
-            print >>sys.stderr, "  %s" % (error)
+            print("  %s" % (error), file=sys.stderr)
         sys.exit(1)
     else:
         sys.exit(0)
@@ -381,13 +380,13 @@ def search(db, query_string, oformat='summary', sort='relevance', limit=None):
     if query_string == '*' and oformat in ['tags','sources','keys']:
         if oformat == 'tags':
             for tag in db.tag_iter():
-                print tag
+                print(tag)
         elif oformat == 'sources':
             for sid in db.sid_iter():
-                print sid
+                print(sid)
         elif oformat == 'keys':
             for key in db.term_iter('key'):
-                print key
+                print(key)
         return
 
     otags = set([])
@@ -401,16 +400,16 @@ def search(db, query_string, oformat='summary', sort='relevance', limit=None):
 
         elif oformat in ['file','files']:
             for path in doc.get_fullpaths():
-                print "%s" % (path)
+                print("%s" % (path))
             continue
 
         elif oformat == 'bibtex':
             bibtex = doc.get_bibtex()
             if not bibtex:
-                print >>sys.stderr, "No bibtex for doc id:%d." % doc.docid
+                print("No bibtex for doc id:%d." % doc.docid, file=sys.stderr)
             else:
-                print bibtex
-                print
+                print(bibtex)
+                print()
             continue
 
         if oformat == 'tags':
@@ -420,14 +419,14 @@ def search(db, query_string, oformat='summary', sort='relevance', limit=None):
         elif oformat == 'keys':
             key = doc.get_key()
             if key:
-                print key
+                print(key)
 
     if oformat == 'tags':
         for tag in otags:
-            print tag
+            print(tag)
     elif oformat == 'sources':
         for source in osources:
-            print source
+            print(source)
 
 ############################################
 
@@ -452,5 +451,5 @@ def export(db, outdir, query_string):
                 ind += 1
             name += '.pdf'
             outpath = os.path.join(outdir,name)
-            print outpath
+            print(outpath)
             shutil.copyfile(path, outpath.encode('utf-8'))

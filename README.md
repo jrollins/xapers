@@ -35,6 +35,8 @@ Xapers is heavily inspired by the notmuch mail indexing system [2].
 [1] http://www.bibtex.org/
 [2] http://notmuchmail.org/
 
+![xapers ncurses UI]](screenshot.png "xapers ncurses UI")
+
 
 Contact
 =======
@@ -71,20 +73,20 @@ Clone the repo:
     $ cd xapers
 
 Dependencies :
-  * python (>= 2.6)
-  * python-xapian - Python Xapian search engine bindings
+  * python3
+  * python3-xapian - Python Xapian search engine bindings
+  * python3-pybtex - Python bibtex parser
   * poppler-utils - PDF processing tools
-  * pybtex (>= 0.19) - Python bibtex parser
-  * pycurl - Python bindings to libcurl
+  * python3-pycurl - Python bindings to libcurl
 
 Recommends (for curses UI) :
-  * python-urwid - Python Urwid curses library
+  * python3-urwid - Python Urwid curses library
   * xdg-utils - Desktop tools for opening files and URLs
   * xclip - X clipboard support for copying document fields
 
 On Debian:
 
-    $ sudo apt-get install python-xapian poppler-utils python-pycurl pybtex python-urwid xdg-utils xclip
+    $ sudo apt-get install python3-xapian python3-pybtex python3-pycurl poppler-utils python3-urwid xdg-utils xclip
 
 Run the tests:
 
@@ -107,7 +109,7 @@ Then:
 
     $ sudo apt-get install build-essential devscripts pkg-config python-all-dev python-setuptools debhelper dpkg-dev fakeroot
     $ make debian-snapshot
-    $ sudo dpkg -i build/xapers_0.6_amd64.deb
+    $ sudo dpkg -i build/xapers_0.8_amd64.deb
 
 
 Using Xapers
@@ -165,3 +167,94 @@ Xapers is a python library under the hood:
 
 Development of new interfaces to the underlying library is highly
 encouraged.
+
+
+Docuemnt Sources
+================
+
+A Xapers "source" is a python module that describes how to interact
+with a single online journal database, from which document files and
+bibliographic data can be retrieved.
+
+Sources are assigned unique prefixes (e.g. "doi").  Online libraries
+associate unique document identifiers to individual documents
+(e.g. "10.1364/JOSAA.29.002092").  A particular online document is
+therefore described by a unique "source identifier", or "sid", which
+can take two equivalent forms:
+
+  full URL            http://dx.doi.org/10.1364/JOSAA.29.002092
+  <source>:<id>       doi:10.1364/JOSAA.29.002092
+
+CUSTOM SOURCE MODULES
+---------------------
+
+Custom source modules may be written to extend the base functionality
+of Xapers.  A source module is described by a single python module
+(although it may import arbitrary other modules).  The base name of
+the module file is interpreted as the nickname or 'prefix' for the
+source (e.g. if the module is named "doi.py" the source nickname will
+be "doi").
+
+The module should include the following properties and functions.  If
+any are missing, some xapers functionality may be undefined.
+
+  description: a brief string description of the source, e.g.:
+
+    description = "Digital Object Identifier"
+
+  url: base URL of source, e.g.:
+
+    url = 'http://dx.doi.org/'
+
+  url_format: a printf format string that produces a valid source URL
+    for a specified source identifier string, e.g.:
+
+    url_format = 'http://dx.doi.org/%s'
+
+  url_regex: a regular expression string that will match the source
+    identifier string from a given full URL, e.g.:
+
+    url_regex = 'http://dx.doi.org/(10\.\d{4,}[\w\d\:\.\-\/]+)'
+
+  scan_regex: a regular expression string that will match the source
+    identifier string in a scan of a documents plain text, e.g.:
+
+    scan_regex = '(?:doi|DOI)[\s\.\:]{0,2}' + id_regex
+
+  fetch_bibtex(id): a function that will return a bibtex string for a
+    source document specified by id.
+
+  fetch_file(id): a function that will return a (file_name, file_data)
+    tuple for a source document specified by id.  File should be in
+    PDF format.
+
+If your source does not provide bibliographic data directly in bibtex
+format, the xapers.bibtex module has several helper functions for
+creating bibtex strings from python dictionaries (data2bib) or json
+objects (json2bib).
+
+See existing source module contributed with the xapers source as
+examples (lib/xapers/sources/).
+
+Source module path
+------------------
+
+Once a custom source module has been created, place it
+~/.xapers/sources.  The module path can be overridden with the
+XAPERS_SOURCE_PATH environment variable, which can be a
+colon-separated list of directories to search for modules.
+
+Testing
+-------
+
+Once a module is in place, use the xapers source* commands (sources,
+source2url, source2bib, source2file) to test it's functionality.  Your
+new module should show up in the source listing with the "sources"
+command, and should be able to print the relevant data with the other
+commands.
+
+Contributing
+------------
+
+If you think your module is stable and of general usefulness to the
+community, please consider contributing it upstream.  Thanks!

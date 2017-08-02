@@ -42,8 +42,8 @@ esac
 ORIGINAL_TERM=$TERM
 
 # For repeatability, reset the environment to known value.
-LANG=C
-LC_ALL=C
+LANG=C.UTF-8
+LC_ALL=C.UTF-8
 PAGER=cat
 TZ=UTC
 TERM=dumb
@@ -697,7 +697,8 @@ rm -fr "$test" || {
 mkdir -p "${test}"
 
 # load local test library
-. ./test-local.sh
+shopt -s expand_aliases
+source ./test-local.sh
 
 # Use -P to resolve symlinks in our working directory so that the cwd
 # in subprocesses like git equals our $PWD (for pathname comparisons).

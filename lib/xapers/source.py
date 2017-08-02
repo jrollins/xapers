@@ -21,7 +21,7 @@ Jameson Rollins <jrollins@finestructure.net>
 import os
 import re
 import pkgutil
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from . import sources
 from .parser import parse_file
@@ -200,7 +200,7 @@ class Sources(object):
         return self.get_source(name, id)
 
     def __iter__(self):
-        return self._sources.itervalues()
+        return iter(self._sources.values())
 
     def match_source(self, string):
         """Return Source object from URL or source identifier string.
@@ -256,7 +256,7 @@ class Sources(object):
         """
         fields = bibentry.get_fields()
         items = set()
-        for field, value in fields.iteritems():
+        for field, value in fields.items():
             field = field.lower()
             if field in self:
                 items.add(self.get_source(field, value))

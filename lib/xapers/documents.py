@@ -22,6 +22,7 @@ import os
 import shutil
 import xapian
 
+from . import util
 from .parser import parse_data
 from .source import Sources
 from .bibtex import Bibtex
@@ -58,7 +59,7 @@ class Documents():
     def __len__(self):
         return self.max
 
-    def next(self):
+    def __next__(self):
         self.index = self.index + 1
         if self.index == self.max:
             raise StopIteration
@@ -112,9 +113,9 @@ class Document():
             os.makedirs(self.docdir)
 
     def _write_files(self):
-        for name, data in self._infiles.iteritems():
+        for name, data in self._infiles.items():
             path = os.path.join(self.docdir, name)
-            with open(path, 'w') as f:
+            with open(path, 'bw') as f:
                 f.write(data)
 
     def _write_bibfile(self):
@@ -195,20 +196,7 @@ class Document():
             
     # return a list of terms for prefix
     def _term_iter(self, prefix=None):
-        term_iter = iter(self.xapian_doc)
-        if prefix:
-            plen = len(prefix)
-            term = term_iter.skip_to(prefix)
-            if not term.term.startswith(prefix):
-                return
-            yield term.term[plen:]
-        for term in term_iter:
-            if prefix:
-                if not term.term.startswith(prefix):
-                    break
-                yield term.term[plen:]
-            else:
-                yield term.term
+        return util.xapian_term_iter(self.xapian_doc, prefix)
 
     def term_iter(self, name=None):
         """Iterator over all terms in the document.
@@ -270,8 +258,9 @@ class Document():
         Added file will have the same name.
 
         File will not copied in to docdir until sync().
+
         """
-        with open(infile, 'r') as f:
+        with open(infile, 'br') as f:
             data = f.read()
         name = os.path.basename(infile)
         self.add_file_data(name, data)
@@ -363,7 +352,7 @@ class Document():
         try:
             year = int(year)
         except ValueError:
-            pass
+            return
         prefix = self.db._find_prefix('year')
         for term in self._term_iter(prefix):
             self._remove_term(prefix, year)
@@ -425,7 +414,7 @@ class Document():
         bibpath = self.get_bibpath()
         if os.path.exists(bibpath):
             with open(bibpath, 'r') as f:
-                bibtex = f.read().decode('utf-8')
+                bibtex = f.read()
             return bibtex.strip()
 
     def get_bibdata(self):
@@ -458,6 +447,13 @@ class Document():
         fields = self.bibentry.get_fields()
         if 'title' in fields:
             return fields['title']
+
+    def get_authors(self):
+        """Get document author(s) from bibtex."""
+        self._load_bib()
+        if not self.bibentry:
+            return
+        return self.bibentry.get_authors()
 
     def get_year(self):
         """Get document year from bibtex."""

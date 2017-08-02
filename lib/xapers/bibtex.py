@@ -59,12 +59,12 @@ class Bibtex():
         else:
             # StringIO requires unicode input
             # http://nedbatchelder.com/text/unipain.html
-            assert type(bibtex) is unicode, "Bibtex strings must be unicode"
+            assert type(bibtex) is str, "Bibtex strings must be unicode"
             with io.StringIO(bibtex) as stream:
                 bibdata = parser.parse_stream(stream)
 
-        self.keys = bibdata.entries.keys()
-        self.entries = bibdata.entries.values()
+        self.keys = list(bibdata.entries.keys())
+        self.entries = list(bibdata.entries.values())
 
         self.index = -1
         self.max = len(self.entries)
@@ -80,7 +80,7 @@ class Bibtex():
     def __len__(self):
         return self.max
 
-    def next(self):
+    def __next__(self):
         self.index = self.index + 1
         if self.index == self.max:
             raise StopIteration
@@ -101,7 +101,7 @@ class Bibentry():
         authors = []
         if 'author' in self.entry.persons:
             for p in self.entry.persons['author']:
-                authors.append(clean_bib_string(unicode(p)))
+                authors.append(clean_bib_string(str(p)))
         return authors
 
     def get_fields(self):
@@ -111,7 +111,8 @@ class Bibentry():
         # clean the strings first
         fields = {}
         for field in bibfields:
-            fields[field] = unicode(clean_bib_string(bibfields[field]))
+            # Treat all keys as lowercase
+            fields[field.lower()] = str(clean_bib_string(bibfields[field]))
         return fields
 
     def set_file(self, path):
