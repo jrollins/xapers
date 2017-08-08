@@ -23,8 +23,8 @@ import sys
 import signal
 
 from . import cli
-from .source import Sources, SourceError
 from .bibtex import Bibtex, BibtexError
+from .source import Sources, SourceAttributeError
 from .parser import ParseError
 
 ########################################################################
@@ -455,10 +455,9 @@ def main():
         sources = Sources()
 
         for ss in sss:
-            try:
-                item = sources.match_source(ss)
-            except SourceError as e:
-                print(e, file=sys.stderr)
+            item = sources.match_source(ss)
+            if not item:
+                print("String '{}' matches no known source.".format(ss), file=sys.stderr)
                 sys.exit(1)
 
             if cmd in ['source2url', 's2u']:
@@ -468,8 +467,8 @@ def main():
             elif cmd in ['source2bib', 's2b']:
                 try:
                     bibtex = item.fetch_bibtex()
-                except Exception as e:
-                    print("Could not retrieve bibtex: %s" % e, file=sys.stderr)
+                except SourceAttributeError as e:
+                    print(e, file=sys.stderr)
                     sys.exit(1)
 
                 if outraw:

@@ -21,6 +21,7 @@ Jameson Rollins <jrollins@finestructure.net>
 import os
 import sys
 import io
+import re
 import json
 import pybtex
 from pybtex.bibtex.utils import split_name_list
@@ -55,7 +56,10 @@ class Bibtex():
         parser = inparser.Parser(encoding='utf-8')
 
         if os.path.exists(bibtex):
-            bibdata = parser.parse_file(bibtex)
+            try:
+                bibdata = parser.parse_file(bibtex)
+            except TokenRequired as e:
+                raise BibtexError(e.get_context())
         else:
             # StringIO requires unicode input
             # http://nedbatchelder.com/text/unipain.html
@@ -126,7 +130,7 @@ class Bibentry():
 
         """
         try:
-            parsed = self.entry.fields['file'].split(':')
+            parsed = re.split(r'(?<!\\):', self.entry.fields['file'])
             if len(parsed) > 1:
                 return parsed[1]
             else:
