@@ -12,9 +12,10 @@ Build-Depends:
  python3-pycurl,
  python3-setuptools,
  python3-xapian,
-Standards-Version: 3.9.8
+Standards-Version: 4.0.0
 Homepage: https://finestructure.net/xapers
 Vcs-Git: https://finestructure.net/git/xapers
+Testsuite: autopkgtest
 
 Package: xapers
 Architecture: all

@@ -1,6 +1,7 @@
 xapers (0.8.2-1) unstable; urgency=medium
 
   * New minor release (Closes: #779601, #823964, #870289)
+  * Update standards version to 4.0.0 and add autopkgtest
 
  -- Jameson Graef Rollins <jrollins@finestructure.net>  Tue, 08 Aug 2017 08:36:24 -0700
 
