@@ -36,7 +36,7 @@ class SourceAttributeError(SourceError):
         self.source = source
         self.msg = msg
     def __str__(self):
-        return "Source '%s' does not include a %s." % (self.source.name, self.msg)
+        return "Source '%s' does not implement the %s." % (self.source.name, self.msg)
 
 ##################################################
 
@@ -207,6 +207,8 @@ class Sources(object):
     def match_source(self, string):
         """Return Source object from URL or source identifier string.
 
+        Return None for no match.
+
         """
         o = urlparse(string)
 
@@ -214,17 +216,16 @@ class Sources(object):
         if o.scheme in ['http', 'https']:
             for source in self:
                 try:
-                    match = re.match(source.url_regex, string)
+                    regex = source.url_regex
                 except SourceAttributeError:
                     # FIXME: warning?
                     continue
+                match = re.match(regex, string)
                 if match:
                     return source[match.group(1)]
 
         elif o.scheme != '' and o.path != '':
             return self.get_source(o.scheme, o.path)
-
-        raise SourceError('String matches no known source.')
 
     def scan_file(self, file):
         """Scan document file for source identifiers

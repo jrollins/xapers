@@ -204,11 +204,9 @@ def add(db, query_string, infile=None, sid=None, tags=None, prompt=False):
 
     elif doc_sid:
         # get source object for sid string
-        try:
-            source = sources.match_source(doc_sid)
-        except SourceError as e:
-            print(e, file=sys.stderr)
-            sys.exit(1)
+        source = sources.match_source(doc_sid)
+        if not source:
+            sys.exit("String '{}' matches no known source.".format(doc_sid))
 
         # check that the source doesn't match an existing doc
         sdoc = db.doc_for_source(source.sid)

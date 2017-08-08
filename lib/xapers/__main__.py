@@ -455,10 +455,9 @@ def main():
         sources = Sources()
 
         for ss in sss:
-            try:
-                item = sources.match_source(ss)
-            except SourceError as e:
-                print(e, file=sys.stderr)
+            item = sources.match_source(ss)
+            if not item:
+                print("String '{}' matches no known source.".format(ss), file=sys.stderr)
                 sys.exit(1)
 
             if cmd in ['source2url', 's2u']:
