@@ -100,15 +100,17 @@ class Source(object):
 
     def fetch_bibtex(self, id):
         try:
-            return self.module.fetch_bibtex(id)
-        except AttributeError:
-            raise SourceAttributeError(self, "fetch_bibtex() function")
+            func = self.module.fetch_bibtex
+        except AttributeError as e:
+            raise SourceAttributeError(self, "fetch_bibtex() function") from e
+        return func(id)
 
     def fetch_file(self, id):
         try:
-            return self.module.fetch_file(id)
-        except AttributeError:
-            raise SourceAttributeError(self, "fetch_file() function")
+            func = self.module.fetch_file(id)
+        except AttributeError as e:
+            raise SourceAttributeError(self, "fetch_file() function") from e
+        return func(id)
 
 class SourceItem(Source):
     """Xapers class representing an item from an online source.
