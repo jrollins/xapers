@@ -42,7 +42,7 @@ nci:
 * customizable palette
 
 sources:
-* add 'hdl': http://handle.net/proxy.html
+* add 'hdl': https://handle.net/proxy.html
 
 parser:
 * extract metadata from pdfs

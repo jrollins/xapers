@@ -12,7 +12,7 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with xapers.  If not, see <http://www.gnu.org/licenses/>.
+along with xapers.  If not, see <https://www.gnu.org/licenses/>.
 
 Copyright 2012-2017
 Jameson Rollins <jrollins@finestructure.net>
@@ -184,8 +184,8 @@ class Document():
     # Parse 'text' and add a term to 'message' for each parsed
     # word. Each term will be added both prefixed (if prefix is not
     # None) and non-prefixed.
-    # http://xapian.org/docs/bindings/python/
-    # http://xapian.org/docs/quickstart.html
+    # https://xapian.org/docs/bindings/python/
+    # https://xapian.org/docs/quickstart.html
     # http://www.flax.co.uk/blog/2009/04/02/xapian-search-architecture/
     def _gen_terms(self, prefix, text):
         term_gen = self.db.term_gen

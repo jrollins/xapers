@@ -16,7 +16,7 @@ xapers sources | sort >OUTPUT
 cat <<EOF >EXPECTED
          dcc: LIGO Document Control Center (https://dcc.ligo.org/) [builtin]
          doi: Digital Object Identifier (https://dx.doi.org/) [builtin]
-       arxiv: Open access e-print service (http://arxiv.org/) [builtin]
+       arxiv: Open access e-print service (https://arxiv.org/) [builtin]
 cryptoeprint: Cryptology ePrint Archive (https://eprint.iacr.org/) [builtin]
 EOF
 test_expect_equal_file OUTPUT EXPECTED

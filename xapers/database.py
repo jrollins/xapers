@@ -12,7 +12,7 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with xapers.  If not, see <http://www.gnu.org/licenses/>.
+along with xapers.  If not, see <https://www.gnu.org/licenses/>.
 
 Copyright 2012-2017
 Jameson Rollins <jrollins@finestructure.net>
@@ -53,7 +53,7 @@ DatabaseModifiedError = xapian.DatabaseModifiedError
 class Database():
     """Represents a Xapers database"""
 
-    # http://xapian.org/docs/omega/termprefixes.html
+    # https://xapian.org/docs/omega/termprefixes.html
     BOOLEAN_PREFIX = {
         'id': 'Q',
         'key': 'XBIB|',
@@ -82,7 +82,7 @@ class Database():
         'a': 'A',
         }
 
-    # http://xapian.org/docs/facets
+    # https://xapian.org/docs/facets
     NUMBER_VALUE_FACET = {
         'year': 0,
         'y': 0,
@@ -148,7 +148,7 @@ class Database():
         stemmer = xapian.Stem("english")
 
         # The Xapian TermGenerator
-        # http://trac.xapian.org/wiki/FAQ/TermGenerator
+        # https://trac.xapian.org/wiki/FAQ/TermGenerator
         self.term_gen = xapian.TermGenerator()
         self.term_gen.set_stemmer(stemmer)
 

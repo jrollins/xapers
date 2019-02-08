@@ -22,7 +22,7 @@ scan_regex = '(?:doi|DOI)[\s\.\:]{0,2}' + id_regex
 
 # function to fetch a bibtex entry for a given source identifier
 def fetch_bibtex(id):
-    # http://www.crosscite.org/cn/
+    # https://www.crosscite.org/cn/
     url = url_format % id
     req = urllib.request.Request(url)
     req.add_header('Accept', 'application/x-bibtex')

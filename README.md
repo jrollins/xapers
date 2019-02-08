@@ -21,7 +21,7 @@ allowing seamless integration into LaTeX work flows.
 Xapers provides source modules for some common online resources:
 
   * doi: Digital Object Identifier (https://dx.doi.org/)
-  * arxiv: Open access e-print service (http://arxiv.org/)
+  * arxiv: Open access e-print service (https://arxiv.org/)
   * dcc: LIGO Document Control Center (https://dcc.ligo.org/)
   * cryptoeprint: Cryptology ePrint Archive (https://eprint.iacr.org/)
 
@@ -31,9 +31,9 @@ creating new sources.
 
 Xapers is heavily inspired by the notmuch mail indexing system [2].
 
-  * [0] http://www.xapian.org/
+  * [0] https://www.xapian.org/
   * [1] http://www.bibtex.org/
-  * [2] http://notmuchmail.org/
+  * [2] https://notmuchmail.org/
 
 ![xapers ncurses UI]](screenshot.png "xapers ncurses UI")
 
@@ -182,7 +182,7 @@ associate unique document identifiers to individual documents
 therefore described by a unique "source identifier", or "sid", which
 can take two equivalent forms:
 
-  full URL            http://dx.doi.org/10.1364/JOSAA.29.002092
+  full URL            https://dx.doi.org/10.1364/JOSAA.29.002092
   <source>:<id>       doi:10.1364/JOSAA.29.002092
 
 CUSTOM SOURCE MODULES

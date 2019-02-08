@@ -12,7 +12,7 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with xapers.  If not, see <http://www.gnu.org/licenses/>.
+along with xapers.  If not, see <https://www.gnu.org/licenses/>.
 
 Copyright 2012-2017
 Jameson Rollins <jrollins@finestructure.net>
@@ -62,7 +62,7 @@ class Bibtex():
                 raise BibtexError(e.get_context())
         else:
             # StringIO requires unicode input
-            # http://nedbatchelder.com/text/unipain.html
+            # https://nedbatchelder.com/text/unipain.html
             assert type(bibtex) is str, "Bibtex strings must be unicode"
             with io.StringIO(bibtex) as stream:
                 bibdata = parser.parse_stream(stream)
