@@ -4,11 +4,11 @@ from xapers.bibtex import data2bib
 
 description = "Open access e-print service"
 
-url = 'http://arxiv.org/'
+url = 'https://arxiv.org/'
 
-url_format = 'http://arxiv.org/abs/%s'
+url_format = 'https://arxiv.org/abs/%s'
 
-url_regex = 'http://arxiv.org/(?:abs|pdf|format)/([^/]*)'
+url_regex = 'https?://arxiv.org/(?:abs|pdf|format)/([^/]*)'
 
 # https://arxiv.org/help/arxiv_identifier
 scan_regex = 'arXiv:([0-9]{4}\.[0-9]{4,5})(?:v[0-9]+)?'
@@ -82,7 +82,7 @@ def fetch_bibtex(id):
     return data2bib(data, 'arxiv:%s' % id)
 
 def fetch_file(id):
-    url = 'http://arxiv.org/pdf/%s' % id
+    url = 'https://arxiv.org/pdf/%s' % id
     f = urllib.request.urlopen(url)
     data = f.read()
     f.close()

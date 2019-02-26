@@ -204,17 +204,17 @@ any are missing, some xapers functionality may be undefined.
 
   url: base URL of source, e.g.:
 
-    url = 'http://dx.doi.org/'
+    url = 'https://dx.doi.org/'
 
   url_format: a printf format string that produces a valid source URL
     for a specified source identifier string, e.g.:
 
-    url_format = 'http://dx.doi.org/%s'
+    url_format = 'https://dx.doi.org/%s'
 
   url_regex: a regular expression string that will match the source
     identifier string from a given full URL, e.g.:
 
-    url_regex = 'http://dx.doi.org/(10\.\d{4,}[\w\d\:\.\-\/]+)'
+    url_regex = 'https?://dx.doi.org/(10\.\d{4,}[\w\d\:\.\-\/]+)'
 
   scan_regex: a regular expression string that will match the source
     identifier string in a scan of a documents plain text, e.g.:
