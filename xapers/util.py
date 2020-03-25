@@ -9,7 +9,11 @@ def xapian_term_iter(xapian_object, prefix=None):
     term_iter = iter(xapian_object)
     if prefix:
         plen = len(prefix)
-        term = term_iter.skip_to(prefix).term.decode()
+        # https://www.python.org/dev/peps/pep-0479/
+        try:
+            term = term_iter.skip_to(prefix).term.decode()
+        except StopIteration:
+            return
         if not term.startswith(prefix):
             return
         yield term[plen:]
