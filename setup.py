@@ -17,15 +17,15 @@ with open("lib/xapers/version.py") as f:
     exec(f.read(), version)
 
 setup(
-    name = 'xapers',
-    version = version['__version__'],
-    description = 'Xapian article indexing system.',
-    long_description = long_description,
-    author = 'Jameson Graef Rollins',
-    author_email = 'jrollins@finestructure.net',
-    url = 'https://finestructure.net/xapers',
-    license = 'GPLv3+',
-    keywords = [],
+    name='xapers',
+    version=version['__version__'],
+    description='Personal journal article management system',
+    long_description=long_description,
+    author='Jameson Graef Rollins',
+    author_email='jrollins@finestructure.net',
+    url='https://finestructure.net/xapers',
+    license='GPLv3+',
+    keywords=[],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: End Users/Desktop',
@@ -41,8 +41,8 @@ setup(
     #     'urwid',
     #     ],
 
-    package_dir = {'': 'lib'},
-    packages = [
+    package_dir={'': 'lib'},
+    packages=[
         'xapers',
         'xapers.parsers',
         'xapers.sources',

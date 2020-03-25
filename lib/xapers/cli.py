@@ -54,6 +54,7 @@ def initdb(writable=False, create=False, force=False):
 class Completer:
     def __init__(self, words):
         self.words = words
+
     def terms(self, prefix, index):
         matching_words = [
             w for w in self.words if w.startswith(prefix)
@@ -62,6 +63,7 @@ class Completer:
             return matching_words[index]
         except IndexError:
             return None
+
 
 def prompt_for_file(infile):
     if infile:
@@ -74,6 +76,7 @@ def prompt_for_file(infile):
         if infile == '':
             infile = None
     return infile
+
 
 def prompt_for_source(db, sources):
     if sources:
@@ -88,6 +91,7 @@ def prompt_for_source(db, sources):
     if source == '':
         source = None
     return source
+
 
 def prompt_for_tags(db, tags):
     # always prompt for tags, and append to initial
@@ -389,7 +393,6 @@ def search(db, query_string, oformat='summary', sort='relevance', limit=None):
 
     otags = set([])
     osources = set([])
-    okeys = set([])
 
     for doc in db.search(query_string, sort=sort, limit=limit):
         if oformat in ['summary']:
