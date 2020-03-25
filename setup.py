@@ -13,7 +13,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 version = {}
-with open("lib/xapers/version.py") as f:
+with open("xapers/version.py") as f:
     exec(f.read(), version)
 
 setup(
@@ -41,7 +41,6 @@ setup(
     #     'urwid',
     #     ],
 
-    package_dir={'': 'lib'},
     packages=[
         'xapers',
         'xapers.parsers',
