@@ -91,7 +91,7 @@ def usage_search():
 
 Search can consist of free-form text and quoted phrases.  Terms can be
 combined with standard Boolean operators.  All terms are combined with
-a logical OR by default.  Parentheses can be used to group operators,
+a logical AND by default.  Parentheses can be used to group operators,
 but must be protect from shell interpretation.  The string '*' will
 match all documents.
 
