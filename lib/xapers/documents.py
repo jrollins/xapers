@@ -90,7 +90,7 @@ class Document():
                 self.docid = docid
             else:
                 self.docid = self.db._generate_docid()
-            self._add_term(self.db._find_prefix('id'), self.docid)
+            self._add_boolean_term(self.db._find_prefix('id'), self.docid)
 
         # specify a directory in the Xapers root for document data
         self.docdir = os.path.join(self.db.root, '%010d' % self.docid)
@@ -169,13 +169,13 @@ class Document():
     # internal stuff
 
     # add an individual prefix'd term for the document
-    def _add_term(self, prefix, value):
-        term = '%s%s' % (prefix, value)
-        self.xapian_doc.add_term(term)
+    def _add_boolean_term(self, prefix, value):
+        term = util.get_full_term(prefix, value)
+        self.xapian_doc.add_boolean_term(term)
 
     # remove an individual prefix'd term for the document
     def _remove_term(self, prefix, value):
-        term = '%s%s' % (prefix, value)
+        term = util.get_full_term(prefix, value)
         try:
             self.xapian_doc.remove_term(term)
         except xapian.InvalidArgumentError:
@@ -247,7 +247,7 @@ class Document():
 
         # FIXME: should files be renamed to something generic (0.pdf)?
         prefix = self.db._find_prefix('file')
-        self._add_term(prefix, name)
+        self._add_boolean_term(prefix, name)
 
         # add it to the cache to be written at sync()
         self._infiles[name] = data
@@ -297,9 +297,9 @@ class Document():
         # remove any existing terms for this source
         self._purge_sources_prefix(source)
         # add a term for the source
-        self._add_term(self.db._find_prefix('source'), source)
+        self._add_boolean_term(self.db._find_prefix('source'), source)
         # add a term for the sid, with source as prefix
-        self._add_term(self.db._make_source_prefix(source), oid)
+        self._add_boolean_term(self.db._make_source_prefix(source), oid)
 
     def get_sids(self):
         """Return a list of sids for document."""
@@ -314,7 +314,7 @@ class Document():
         """Add tags from list to document."""
         prefix = self.db._find_prefix('tag')
         for tag in tags:
-            self._add_term(prefix, tag)
+            self._add_boolean_term(prefix, tag)
 
     def get_tags(self):
         """Return a list of tags associated with document."""
@@ -356,7 +356,7 @@ class Document():
         prefix = self.db._find_prefix('year')
         for term in self._term_iter(prefix):
             self._remove_term(prefix, year)
-        self._add_term(prefix, year)
+        self._add_boolean_term(prefix, year)
         facet = self.db._find_facet('year')
         self.xapian_doc.add_value(facet, xapian.sortable_serialise(year))
 
@@ -371,7 +371,7 @@ class Document():
         prefix = self.db._find_prefix('key')
         for term in self._term_iter(prefix):
             self._remove_term(prefix, term)
-        self._add_term(prefix, key)
+        self._add_boolean_term(prefix, key)
 
     def _index_bibentry(self, bibentry):
         authors = bibentry.get_authors()

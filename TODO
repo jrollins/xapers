@@ -60,13 +60,6 @@ parser:
 BUGS
 ====
 
-* capitalized prefixed terms are not searchable
-  - dcc:T00000
-  - key:HaEA2009a
-  If the term is capitalized, a colon gets automatically added:
-      key:foo -> XBIB|foo
-      key:Foo -> XBIB|:Foo
-
 * can not add --file when source contains '/'
   * "xapers add --source=arXiv:hep-th/9806203 --file"
 
