@@ -18,7 +18,7 @@ url_regex = 'https?://[dx\.]?doi.org/(10\.\d{4,}[\w\d\:\.\-\/]+)'
 #scan_regex = '\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?!["&\'<>])[[:graph:]])+)\b'
 #scan_regex = '(doi|DOI)(10[.][0-9]{4,}(?:[.][0-9]+)*[\/\.](?:(?!["&\'<>])[[:graph:]])+)'
 #scan_regex = '(?:doi|DOI)[\s\.\:]{0,2}(10\.\d{4,}[\w\d\:\.\-\/]+)'
-scan_regex = '(?:doi|DOI)[\s\.\:]{0,2}' + id_regex
+scan_regex = '(?:[dx\.]?doi.org/|doi|DOI)[\s\.\:]{0,2}' + id_regex
 
 # function to fetch a bibtex entry for a given source identifier
 def fetch_bibtex(id):
