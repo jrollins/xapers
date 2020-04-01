@@ -107,7 +107,7 @@ class Source(object):
 
     def fetch_file(self, id):
         try:
-            func = self.module.fetch_file(id)
+            func = self.module.fetch_file
         except AttributeError as e:
             raise SourceAttributeError(self, "fetch_file() function") from e
         return func(id)
