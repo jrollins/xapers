@@ -1,5 +1,4 @@
 import urwid
-import logging
 
 ############################################################
 
@@ -24,14 +23,14 @@ class Help(urwid.Frame):
                                   ])
 
         if target:
-            for k,h in target.help():
+            for k, h in target.help():
                 if not k:
                     pile.append(urwid.Text(''))
                     pile.append(urwid.Text(''))
                     pile.append(urwid.Text(h))
                     pile.append(urwid.Text(''))
                 else:
-                    pile.append(fch(k,h))
+                    pile.append(fch(k, h))
             pile.append(urwid.Text(''))
             pile.append(urwid.Text(''))
 
@@ -40,7 +39,7 @@ class Help(urwid.Frame):
         for k, cmd in self.ui.keys.items():
             f = getattr(ui, cmd)
             h = str(getattr(f, '__doc__'))
-            pile.append(fch(k,h))
+            pile.append(fch(k, h))
 
         body = urwid.ListBox(urwid.SimpleListWalker(pile))
 

@@ -18,7 +18,6 @@ Copyright 2012-2017
 Jameson Rollins <jrollins@finestructure.net>
 """
 
-import os
 import sys
 import urwid
 import logging

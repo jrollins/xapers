@@ -355,7 +355,7 @@ EOF
 test_expect_equal_file OUTPUT EXPECTED
 
 test_begin_subtest 'search --output=bibtex single'
-xapers search --output=bibtex tag:foo | sed "s|$XAPERS_ROOT|XAPERS_ROOT|" >OUTPUT
+xapers search --output=bibtex tag:foo | sed 's|\\_|_|g' | sed "s|$XAPERS_ROOT|XAPERS_ROOT|" >OUTPUT
 cat <<EOF >EXPECTED
 @article{arxiv:1235,
     author = "Dole, Bob and Cruise, Tim",
@@ -369,7 +369,7 @@ EOF
 test_expect_equal_file OUTPUT EXPECTED
 
 test_begin_subtest 'bibtex multiple'
-xapers bibtex tag:new | sed "s|$XAPERS_ROOT|XAPERS_ROOT|" >OUTPUT
+xapers bibtex tag:new | sed 's|\\_|_|g' | sed "s|$XAPERS_ROOT|XAPERS_ROOT|" >OUTPUT
 cat <<EOF >EXPECTED
 @article{Good_Bad_Up_Down_Left_Right_et_al._2012,
     author = "Good, Bob and Bad, Sam and Up, Steve and Down, Joseph and Left, Aidan and Right, Kate and et al.",
