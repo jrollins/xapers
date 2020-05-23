@@ -3,7 +3,7 @@ Section: text
 Priority: optional
 Maintainer: Jameson Graef Rollins <jrollins@finestructure.net>
 Build-Depends:
- debhelper (>= 9),
+ debhelper-compat (= 13),
  dh-python,
  pkg-config,
  poppler-utils,
@@ -12,10 +12,10 @@ Build-Depends:
  python3-pycurl,
  python3-setuptools,
  python3-xapian,
-Standards-Version: 4.0.0
+Standards-Version: 4.5.0
 Homepage: https://finestructure.net/xapers
 Vcs-Git: https://finestructure.net/git/xapers
-Testsuite: autopkgtest
+Rules-Requires-Root: no
 
 Package: xapers
 Architecture: all
