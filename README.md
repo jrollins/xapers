@@ -169,7 +169,7 @@ Development of new interfaces to the underlying library is highly
 encouraged.
 
 
-Docuemnt Sources
+Document Sources
 ================
 
 A Xapers "source" is a python module that describes how to interact

@@ -13,19 +13,19 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 version = {}
-with open("lib/xapers/version.py") as f:
+with open("xapers/version.py") as f:
     exec(f.read(), version)
 
 setup(
-    name = 'xapers',
-    version = version['__version__'],
-    description = 'Xapian article indexing system.',
-    long_description = long_description,
-    author = 'Jameson Graef Rollins',
-    author_email = 'jrollins@finestructure.net',
-    url = 'https://finestructure.net/xapers',
-    license = 'GPLv3+',
-    keywords = [],
+    name='xapers',
+    version=version['__version__'],
+    description='Personal journal article management system',
+    long_description=long_description,
+    author='Jameson Graef Rollins',
+    author_email='jrollins@finestructure.net',
+    url='https://finestructure.net/xapers',
+    license='GPLv3+',
+    keywords=[],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: End Users/Desktop',
@@ -41,8 +41,7 @@ setup(
     #     'urwid',
     #     ],
 
-    package_dir = {'': 'lib'},
-    packages = [
+    packages=[
         'xapers',
         'xapers.parsers',
         'xapers.sources',

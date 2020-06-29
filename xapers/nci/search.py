@@ -260,13 +260,13 @@ class DocItem(urwid.WidgetWrap):
         """apply tags to document (space separated, +add/-remove)"""
         prompt = "tag document {} (+add -remove): ".format(self.docid)
         initial = ''
-        if sign is '+':
+        if sign == '+':
             initial = '+'
-        elif sign is '-':
+        elif sign == '-':
             initial = '-'
         elif sign:
             raise ValueError("sign must be '+' or '-'.")
-        if sign is '-':
+        if sign == '-':
             completions = self.doc.get_tags()
         else:
             completions = self.ui.db.get_tags()
@@ -331,7 +331,7 @@ class DocWalker(urwid.ListWalker):
 
     def prev_position(self, pos):
         return pos - 1
-        
+
 ############################################################
 
 class Search(urwid.Frame):
@@ -418,7 +418,6 @@ class Search(urwid.Frame):
             return key
 
     def help(self):
-        lines = []
         def get_keys(o):
             for k, cmd in list(o.keys.items()):
                 yield (k, str(getattr(getattr(o, cmd), '__doc__')))

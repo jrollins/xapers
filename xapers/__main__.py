@@ -23,7 +23,7 @@ import sys
 import signal
 
 from . import cli
-from .bibtex import Bibtex, BibtexError
+from .bibtex import Bibtex
 from .source import Sources, SourceAttributeError
 from .parser import ParseError
 
@@ -86,12 +86,13 @@ directory is allowed to be a symlink).
 See 'xapers help search' for more information on term definitions and
 search syntax.""")
 
+
 def usage_search():
     print("""Xapers supports a common syntax for search terms.
 
 Search can consist of free-form text and quoted phrases.  Terms can be
 combined with standard Boolean operators.  All terms are combined with
-a logical OR by default.  Parentheses can be used to group operators,
+a logical AND by default.  Parentheses can be used to group operators,
 but must be protect from shell interpretation.  The string '*' will
 match all documents.
 
@@ -130,6 +131,7 @@ def make_query_string(terms, require=True):
             string = '*'
     return string
 
+
 def import_nci():
     try:
         from . import nci
@@ -152,7 +154,7 @@ def main():
         cmd = []
 
     ########################################
-    if cmd in ['add','a']:
+    if cmd in ['add', 'a']:
         tags = None
         infile = None
         sid = None
@@ -165,14 +167,14 @@ def main():
             if argc >= len(sys.argv):
                 break
             elif '--source=' in sys.argv[argc]:
-                sid = sys.argv[argc].split('=',1)[1]
+                sid = sys.argv[argc].split('=', 1)[1]
             elif '--file' in sys.argv[argc]:
                 if '=' in sys.argv[argc]:
-                    infile = sys.argv[argc].split('=',1)[1]
+                    infile = sys.argv[argc].split('=', 1)[1]
                 else:
                     infile = True
             elif '--tags=' in sys.argv[argc]:
-                tags = sys.argv[argc].split('=',1)[1].split(',')
+                tags = sys.argv[argc].split('=', 1)[1].split(',')
             elif '--prompt' in sys.argv[argc]:
                 prompt = True
             elif '--view' in sys.argv[argc]:
@@ -192,7 +194,7 @@ def main():
             nci.UI(cmd=['search', 'id:'+str(docid)])
 
     ########################################
-    elif cmd in ['import','i']:
+    elif cmd in ['import', 'i']:
         tags = []
 
         argc = 2
@@ -200,7 +202,7 @@ def main():
             if argc >= len(sys.argv):
                 break
             elif '--tags=' in sys.argv[argc]:
-                tags = sys.argv[argc].split('=',1)[1].split(',')
+                tags = sys.argv[argc].split('=', 1)[1].split(',')
             elif '--overwrite' in sys.argv[argc]:
                 overwrite = True
             else:
@@ -265,7 +267,7 @@ def main():
                 print("done.", file=sys.stderr)
 
     ########################################
-    elif cmd in ['search','s']:
+    elif cmd in ['search', 's']:
         oformat = 'summary'
         sort = 'relevance'
         limit = 0
@@ -284,11 +286,11 @@ def main():
                 break
             argc += 1
 
-        if oformat not in ['summary','bibtex','tags','sources','keys','files']:
+        if oformat not in ['summary', 'bibtex', 'tags', 'sources', 'keys', 'files']:
             print("Unknown output format.", file=sys.stderr)
             sys.exit(1)
 
-        if sort not in ['relevance','year']:
+        if sort not in ['relevance', 'year']:
             print("Unknown sort parameter.", file=sys.stderr)
             sys.exit(1)
 
@@ -304,14 +306,14 @@ def main():
             cli.search(db, query, oformat='tags')
 
     ########################################
-    elif cmd in ['bibtex','bib','b']:
+    elif cmd in ['bibtex', 'bib', 'b']:
         argc = 2
         query = make_query_string(sys.argv[argc:])
         with cli.initdb() as db:
             cli.search(db, query, oformat='bibtex')
 
     ########################################
-    elif cmd in ['nci','view','show','select']:
+    elif cmd in ['nci', 'view', 'show', 'select']:
         nci = import_nci()
         if cmd == 'nci':
             args = sys.argv[2:]
@@ -321,7 +323,7 @@ def main():
         nci.UI(cmd=args)
 
     ########################################
-    elif cmd in ['tag','t']:
+    elif cmd in ['tag', 't']:
         add_tags = []
         remove_tags = []
 
@@ -490,7 +492,7 @@ def main():
                     sys.exit(1)
 
     ########################################
-    elif cmd in ['scandoc','sd']:
+    elif cmd in ['scandoc', 'sd']:
         try:
             infile = sys.argv[2]
         except IndexError:
@@ -508,12 +510,12 @@ def main():
             print(item)
 
     ########################################
-    elif cmd in ['version','--version','-v']:
+    elif cmd in ['version', '--version', '-v']:
         from . import version
         print('xapers', version.__version__)
 
     ########################################
-    elif cmd in ['help','h','--help','-h']:
+    elif cmd in ['help', 'h', '--help', '-h']:
         if len(sys.argv) > 2:
             if sys.argv[2] == 'search':
                 usage_search()
@@ -528,6 +530,7 @@ def main():
             print("Command not specified.", file=sys.stderr)
         print("See \"help\" for more information.", file=sys.stderr)
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

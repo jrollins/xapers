@@ -193,7 +193,7 @@ class Document():
         if prefix:
             term_gen.index_text(text, 1, prefix)
         term_gen.index_text(text)
-            
+
     # return a list of terms for prefix
     def _term_iter(self, prefix=None):
         return util.xapian_term_iter(self.xapian_doc, prefix)
