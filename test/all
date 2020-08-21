@@ -269,7 +269,6 @@ EOF
 test_expect_equal_file OUTPUT EXPECTED
 
 test_begin_subtest 'search prefix bib:'
-test_subtest_known_broken
 xapers search key:Good_Bad_Up_Down_Left_Right_et_al._2012 >OUTPUT
 cat <<EOF >EXPECTED
 id:2 [doi:10.9999/FOO.1] {Good_Bad_Up_Down_Left_Right_et_al._2012} (bar new) "Multicolor cavity sadness"

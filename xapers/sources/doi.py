@@ -11,14 +11,14 @@ id_regex = '(10\.\d{4,}[\w\d\:\.\-\/]+)'
 
 # for regex matching a supplied URL.  match group 1 should return the
 # source identifier string
-url_regex = 'https?://dx.doi.org/(10\.\d{4,}[\w\d\:\.\-\/]+)'
+url_regex = 'https?://[dx\.]?doi.org/(10\.\d{4,}[\w\d\:\.\-\/]+)'
 
 # for regex scanning of document text
 #scan_regex = '[doi|DOI][\s\.\:]{0,2}(10\.\d{4}[\d\:\.\-\/a-z]+)[A-Z\s]'
 #scan_regex = '\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?!["&\'<>])[[:graph:]])+)\b'
 #scan_regex = '(doi|DOI)(10[.][0-9]{4,}(?:[.][0-9]+)*[\/\.](?:(?!["&\'<>])[[:graph:]])+)'
 #scan_regex = '(?:doi|DOI)[\s\.\:]{0,2}(10\.\d{4,}[\w\d\:\.\-\/]+)'
-scan_regex = '(?:doi|DOI)[\s\.\:]{0,2}' + id_regex
+scan_regex = '(?:[dx\.]?doi.org/|doi|DOI)[\s\.\:]{0,2}' + id_regex
 
 # function to fetch a bibtex entry for a given source identifier
 def fetch_bibtex(id):
