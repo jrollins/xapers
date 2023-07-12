@@ -28,6 +28,7 @@ from pybtex.bibtex.utils import split_name_list
 from pybtex.database import Entry, Person
 from pybtex.database.input import bibtex as inparser
 from pybtex.database.output import bibtex as outparser
+from pybtex.scanner import TokenRequired
 
 
 def clean_bib_string(string):
